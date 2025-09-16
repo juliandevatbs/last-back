@@ -9,12 +9,15 @@ load_dotenv() # Load environment variables from .env file
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
+
 DEBUG = True
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
 ]
+
+
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -45,8 +48,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'read_data',
+    'write_data',
     'rest_framework',
     "corsheaders",
+
 ]
 
 MIDDLEWARE = [
@@ -88,8 +93,14 @@ DB_PORT = os.getenv("DATABASE_PORT")
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mssql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'OPTIONS':{
+            'driver': 'ODBC Driver 17 for SQL Server',
+           }
     }
 }
 

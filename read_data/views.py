@@ -3,43 +3,36 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import threading
+from core.tasks import read_excel, general_task
 from read_data.services.excel_reader import read_main_sheet_excel, read_chain_of_custody
 
 class ReadFile(APIView):
 
-    # Post method
+    # Post method (Receives the file and the selected template for the report generation)
     def post(self ,request, *args, **kwargs):
 
+        # Get the file from the formData
         uploaded_file = request.FILES.get('file')
-        #print(uploaded_file.name)
+
+        # Get the template data from the formData
+        selected_template = request.POST.get('template')
+
+        print(selected_template)
 
         if not uploaded_file:
-
             return Response({"error": "The file was not sent"}, status=status.HTTP_400_BAD_REQUEST)
 
-        #Open the workbook from here to avoid opening it multiple times from the reading functions
-        workbook = load_workbook(uploaded_file)
+        if not selected_template:
+            return Response({"error": "The template was not sent"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Read the different sheets
-        try:
-            read_main_sheet_excel(workbook)
+        file_bytes = uploaded_file.read()
 
-        except Exception as ex:
+        # Launch a thread to process the excel without block the response
+        thread = threading.Thread(target=general_task , args=(file_bytes,))
+        thread.start()
 
-            print(f"Error reading the basic data sheet -> {ex}")
-
-        try:
-            read_chain_of_custody(workbook)
-
-        except Exception as ex:
-
-            print(f"Error reading the chain of custody -> {ex}")
-
-
-        #Close workbook to free up resources
-        workbook.close()
-
-        #Return 200 response
+        #Return 200 OK response
         return Response({"Success": "File opened succesfully"}, status=status.HTTP_200_OK)
 
 
