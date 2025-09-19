@@ -1,14 +1,13 @@
-import os
-import io
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.shared import Pt
 from docx.text.paragraph import Paragraph
 
-
 # Import custom exceptions
-from core.exceptions import NoDataError, KeyNotFound
+from core.exceptions import NoDataError
+from core.services.server_service import ServerService
+from core.utils.data.int_to_string_relative import int_to_string_relative
 from write_data.services.text_fixing import sampling_site_fixing
 from datetime import datetime
 
@@ -22,6 +21,9 @@ class WordService:
         self.template_path = template_path
         self.doc = None
         self.data_to_write = data_to_write
+
+        # Server instance
+        self.server_templates = ServerService()
 
         #IMPORTANT CONSTRAINTS
         self.font = "Century Gothic"
@@ -44,6 +46,9 @@ class WordService:
         self.client_contact_name = self.main_data["contact_client_name"]
         self.client_name = self.main_data["client_name"]
         self.report_number = self.main_data["report_number"]
+        self.sampling_date = self.sampling_data["sampling_date"]
+        self.sampling_date_fixed = self.sampling_date.strftime("%Y-%m-%d")
+        self.samples_quantity = len(self.samples)
 
 
 
@@ -277,21 +282,85 @@ class WordService:
             return False
 
         # First paragraph (This is the type of report like INFORME DE MONITOREO)
-        report_number_title = f"Informe numero: {self.report_number}"
-
         first_table = self.doc.tables[0]
 
         tbl_element = first_table._element
         new_paragraph = OxmlElement("w:p")
         tbl_element.addnext(new_paragraph)
 
-        # Construir el objeto Paragraph correcto en el contexto del documento
-        p = Paragraph(new_paragraph, first_table._parent)
+        p1 = Paragraph(new_paragraph, first_table._parent)
+        p1.paragraph_format.space_before = Pt(20)
+        p1.paragraph_format.space_after = Pt(20)
+        p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-        run = p.add_run(report_number_title)
-        run.font.name = self.font
-        run.font.size = Pt(10)
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run1_bold = p1.add_run("INFORME NÚMERO: ")
+        run1_bold.font.name = self.font
+        run1_bold.font.size = Pt(10)
+        run1_bold.bold = True
+
+        run1_normal = p1.add_run(f"{self.report_number}")
+        run1_normal.font.name = self.font
+        run1_normal.font.size = Pt(10)
+        run1_normal.bold = False
+
+        new_paragraph2 = OxmlElement("w:p")
+        p1._element.addnext(new_paragraph2)
+
+        p2 = Paragraph(new_paragraph2, first_table._parent)
+        p2.paragraph_format.space_before = Pt(5)
+        p2.paragraph_format.space_after = Pt(5)
+        p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+        run2_bold = p2.add_run("Fechas de muestreo: ")
+        run2_bold.font.name = self.font
+        run2_bold.font.size = Pt(11)
+        run2_bold.bold = True
+
+
+        run2_normal = p2.add_run(f"{self.sampling_date_fixed}")
+        run2_normal.font.name = self.font
+        run2_normal.font.size = Pt(10)
+        run2_normal.bold = False
+
+
+
+
+        print(self.samples_quantity)
+
+
+        templates = self.server_templates.get_avaible_templates()
+
+        print(templates)
+
+
+    def write_goals(self):
+
+
+        relative_quantity_samples = int_to_string_relative(self.samples_quantity)
+
+        # Number of samples plural o singular
+        number_samples_p_s = 'punto'
+
+        if self.samples_quantity > 1:
+
+            number_samples_p_s = "puntos"
+
+
+
+
+
+        return True
+
+
+
+
+
+
+
+
+
+
+
 
 
     def save(self, output_path):

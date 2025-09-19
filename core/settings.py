@@ -85,24 +85,53 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 # Load from dotenv the database important data
-DB_NAME = os.getenv("DATABASE_NAME")
-DB_USER = os.getenv("DATABASE_USER")
-DB_PASSWORD = os.getenv("DATABASE_PASSWORD")
-DB_HOST = os.getenv("DATABASE_HOST")
-DB_PORT = os.getenv("DATABASE_PORT")
+
+# SAMPLER DATABASE CREDENTIALS
+SAMPLER_DB_NAME = os.getenv("SAMPLER_DATABASE_NAME")
+SAMPLER_DB_USER = os.getenv("SAMPLER_DATABASE_USER")
+SAMPLER_DB_PASSWORD = os.getenv("SAMPLER_DATABASE_PASSWORD")
+SAMPLER_DB_HOST = os.getenv("SAMPLER_DATABASE_HOST")
+#SAMPLER_DB_PORT = os.getenv("SAMPLER_DATABASE_PORT")
+
+# PROJECT DATABASE CREDENTIALS
+PROJECT_DB_NAME = os.getenv("PROJECT_DATABASE_NAME")
+PROJECT_DB_USER = os.getenv("PROJECT_DATABASE_USER")
+PROJECT_DB_PASSWORD = os.getenv("PROJECT_DATABASE_PASSWORD")
+PROJECT_DB_HOST = os.getenv("PROJECT_DATABASE_HOST")
+
+
+print(PROJECT_DB_NAME)
+print(PROJECT_DB_USER)
+print(PROJECT_DB_PASSWORD)
+print(PROJECT_DB_HOST)
 
 DATABASES = {
-    'default': {
+    'sampler': {
         'ENGINE': 'mssql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
+        'NAME': SAMPLER_DB_NAME,
+        'USER': SAMPLER_DB_USER,
+        'PASSWORD': SAMPLER_DB_PASSWORD,
+        'HOST': SAMPLER_DB_HOST,
         'OPTIONS':{
             'driver': 'ODBC Driver 17 for SQL Server',
            }
+    },
+
+    'default': {
+
+        'ENGINE': 'mssql',
+        'NAME': PROJECT_DB_NAME,
+        'HOST': r'(localdb)\SRLlocal',
+        'OPTIONS': {
+
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'trusted_connection': 'yes',
+        }
+
     }
 }
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {

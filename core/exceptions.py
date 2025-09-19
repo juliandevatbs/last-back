@@ -18,3 +18,8 @@ class KeyNotFound(Exception):
 
 
     pass
+
+
+class ServerClientException(Exception):
+
+    pass
