@@ -21,6 +21,7 @@ def read_main_sheet_excel(workbook) -> dict :
         data_client["prepared_by"] = main_sheet["E2"].value or "No manufacturer found"
         data_client["report_type"] = "INFORME DE MONITOREO"
         data_client["report_number"] = 12701
+        data_client["municipality"] = main_sheet["B7"].value or "No municipality found"
 
         #Storage sampling importation data
         sampling_data["sampling_site"] = main_sheet["E4"].value or "Not sampling site"

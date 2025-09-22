@@ -12,4 +12,3 @@ class Project(models.Model):
 
 
 
-

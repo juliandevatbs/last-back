@@ -66,12 +66,9 @@ class ServerClient:
 
         try:
 
-            local_template_url = f"templates/{selected_name_template}"
+            if not os.path.exists(template_path):
 
-
-            if not os.path.exists(local_template_url):
-
-                logger.error(f"Template not found in the url -> {local_template_url}")
+                logger.error(f"Template not found in the url -> {template_path}")
 
 
                 raise ServerClientException(
@@ -81,8 +78,11 @@ class ServerClient:
 
 
                 )
-            logger.info(f"Loading template from {local_template_url}")
-            template_open = Document(local_template_url)
+            logger.info(f"Loading template from {template_path}")
+
+            template_doc = Document(template_path)
+
+            return template_doc
 
         except ServerClientException:
 
