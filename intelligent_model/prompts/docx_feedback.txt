@@ -1,0 +1,51 @@
+Actúa como un experto revisor de reportes de laboratorio químico con amplia experiencia en análisis de muestras y documentación técnica.
+
+Analiza el siguiente reporte de laboratorio que contiene resultados de muestras tomadas en diversos puntos de muestreo y proporciona un feedback detallado con áreas de mejora específicas.
+
+{documento_text}
+
+Por favor, evalúa el reporte considerando los siguientes aspectos y proporciona feedback constructivo:
+
+- Evalúa la claridad y precisión en la redacción
+- Revisa la coherencia en el uso del lenguaje técnico
+- Identifica errores gramaticales, ortográficos o de sintaxis
+
+- Analiza el uso correcto de terminología química y de laboratorio
+- Revisa la consistencia en nomenclatura y unidades
+- Evalúa si la redacción es apropiada para el contexto científico
+
+- Revisa si la información se comunica de manera clara y comprensible
+- Evalúa la fluidez y coherencia en la redacción de párrafos
+- Identifica frases confusas o ambiguas que puedan mejorarse
+
+- Evalúa la claridad en la redacción de análisis y conclusiones
+- Revisa si las interpretaciones están bien expresadas
+- Analiza la coherencia entre resultados y conclusiones redactadas
+
+- Identifica inconsistencias en el estilo de redacción
+- Revisa el uso uniforme de tiempos verbales y personas gramaticales
+- Evalúa la coherencia en el tono profesional del documento
+
+- Revisa la fluidez y naturalidad de la redacción
+- Identifica repeticiones innecesarias o redundancias
+- Evalúa si el estilo de escritura es apropiado para un reporte científico
+
+
+Estructura tu feedback de la siguiente manera:
+
+- Lista los aspectos positivos de la redacción y comunicación
+
+1. [Aspecto específico] - Descripción del problema redaccional y sugerencia de mejora
+2. [Aspecto específico] - Descripción del problema redaccional y sugerencia de mejora
+3. [Aspecto específico] - Descripción del problema redaccional y sugerencia de mejora
+
+- Proporciona recomendaciones específicas para mejorar la claridad y precisión
+- Incluye ejemplos de reformulaciones cuando sea posible
+
+- Lista errores gramaticales, ortográficos o de estilo identificados
+
+- Proporciona una evaluación de la calidad redaccional (Excelente/Buena/Regular/Deficiente) con justificación
+
+- Sugiere las mejoras más importantes en redacción y comunicación
+
+Enfócate exclusivamente en aspectos de redacción, claridad comunicativa, precisión del lenguaje y calidad de la expresión escrita. No evalúes la estructura del documento ya que está certificada y avalada.

@@ -17,9 +17,6 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
-
-
-
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5173",
@@ -51,6 +48,8 @@ INSTALLED_APPS = [
     'write_data',
     'rest_framework',
     "corsheaders",
+    "metrics_data",
+    "intelligent_model"
 
 ]
 
@@ -99,11 +98,6 @@ PROJECT_DB_USER = os.getenv("PROJECT_DATABASE_USER")
 PROJECT_DB_PASSWORD = os.getenv("PROJECT_DATABASE_PASSWORD")
 PROJECT_DB_HOST = os.getenv("PROJECT_DATABASE_HOST")
 
-
-print(PROJECT_DB_NAME)
-print(PROJECT_DB_USER)
-print(PROJECT_DB_PASSWORD)
-print(PROJECT_DB_HOST)
 
 DATABASES = {
     'sampler': {

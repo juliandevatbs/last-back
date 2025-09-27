@@ -48,6 +48,15 @@ class WordService:
         self.surveillance_data = self.data_to_write["surveillance_data"]
 
 
+        if self.surveillance_data:
+
+            print(self.surveillance_data)
+
+        else:
+
+            print("NO EXISTEEEEEEEEEEEEEEEE")
+
+
         # General data for pages
         self.sampling_site = self.sampling_data["sampling_site"]
         self.prefix_water_title = "CARACTERIZACIÓN FISICOQUÍMICA DE"
@@ -55,6 +64,8 @@ class WordService:
         self.water_type = self.sampling_data["sampling_site"]
         self.report_name = f"{self.prefix_water_title} {self.water_type}"
         self.fixed_sampling_site = sampling_site_fixing(self.sampling_site)
+
+        print(f"FIXED SAMPLING SITE {self.fixed_sampling_site}")
         self.client_contact_name = self.main_data["contact_client_name"]
         self.client_name = self.main_data["client_name"]
         self.report_number = self.main_data["report_number"]

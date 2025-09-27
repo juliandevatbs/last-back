@@ -43,13 +43,16 @@ class ServerClient:
             logger.error(f"Error accessing template server: {e}")
             raise ServerClientException(f"Failed to fetch template names: {e}")
 
-    def get_selected_template(self, selected_name_template: str):
+    def get_selected_template(self, selected_name_template: dict):
 
         if not selected_name_template:
             logger.error("No template option was provided")
             raise ValueError("A template must be selected")
 
         # Ensure the file has .docx extension
+
+        # Get the template name from the dictionary
+        selected_name_template = selected_name_template["name"]
 
         if not selected_name_template.endswith('.docx'):
 
@@ -60,11 +63,13 @@ class ServerClient:
         template_path= os.path.join("templates", selected_name_template)
 
 
-
-
+        print("DICT NOMBRE PLANTILLLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        print(selected_name_template)
 
 
         try:
+
+
 
             if not os.path.exists(template_path):
 
@@ -72,6 +77,8 @@ class ServerClient:
 
 
                 raise ServerClientException(
+
+
 
                     f"Template not found: {selected_name_template}"
 

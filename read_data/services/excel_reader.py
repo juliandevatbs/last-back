@@ -102,6 +102,15 @@ def read_punctual_surveillance_chain(workbook) -> dict:
     try:
         punctual_surveillance_chain_sheet = workbook["CADENA DE VIGILANCIA PUNTUAL"]
 
+
+        if punctual_surveillance_chain_sheet:
+
+            print("SI EXISTE LA HOJA")
+
+        else:
+
+            print("NO EXISTE LA HOJA SURVEILLANCE")
+
         ROW_TYPE_WATER = 17
 
         dict_water_types = {
@@ -124,7 +133,7 @@ def read_punctual_surveillance_chain(workbook) -> dict:
             cell_coord = f"{column}{ROW_TYPE_WATER}"
             cell_value = punctual_surveillance_chain_sheet[cell_coord].value
 
-            if cell_value == 'X':
+            if cell_value == 'X' or cell_value == 'x':
 
                 punctual_data["water_type"] = dict_water_types[column]
 
@@ -142,14 +151,14 @@ def data_constructor(workbook) -> dict:
 
     try:
 
-        main_data, client_data = read_main_sheet_excel(workbook)
+        main_data, sampling_data = read_main_sheet_excel(workbook)
         samples_data = read_chain_of_custody(workbook)
         surveillance_data = read_punctual_surveillance_chain(workbook)
 
         return {
 
             "main_data" : main_data,
-            "sampling_data": client_data,
+            "sampling_data": sampling_data,
             "samples": samples_data,
             "surveillance_data": surveillance_data
         }
