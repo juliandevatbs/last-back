@@ -10,6 +10,7 @@ from intelligent_model.services.gemini_service import ask_gemini
 from read_data.services.excel_reader import read_main_sheet_excel, read_chain_of_custody, data_constructor
 from read_data.services.extract_text_docx import extract_text_docx
 from write_data.services.data_writer import WordService
+from write_data.services.json_builder import JsonBuilder
 from write_data.services.writer import Writer
 
 logger = logging.getLogger(__name__)
@@ -98,22 +99,42 @@ def get_feedback_from_gemini(file_bytes):
         logger.error(f"Error procesando documento: {e}")
         print(f"Error procesando documento: {e}")
         return None
-# Caller for the functions
+
+
+# Main Caller for the functions
 def general_task(file_bytes,selected_template, selected_options, selected_reporter):
+
 
     data = read_excel(file_bytes)
 
+    # Create a Writer instance for call all its functions
     writer_instance = Writer()
 
-    writer_instance.get_json_config("PLANTILLA INF_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB")
+    # Create a JsonBuilder instance for call all its functions
+    json_builder_instance = JsonBuilder(file_bytes)
 
+    # Load json file
+    json_builder_instance.load_json()
 
-    print("ESTO ES LO QUE ES SELECTED TEMPLATE")
-    print(selected_template)
-    print(type(selected_template))
+    # Write excel data to json file
+    json_builder_instance.update_json()
 
+    # Load the updated json data to the writer
+    writer_instance.load_json_config()
 
-    write_report(data, selected_template)
+    # Open word template to write
+    writer_instance.load_word_template()
+
+    # Main writer calls all of writer functions in a specific order
+    writer_instance.main_writer()
+
+    # Clen the json config to reuse with other report
+    json_builder_instance.clean_json()
+
+    # Save the document with all changes
+    writer_instance.save_document("templates/final.docx")
+
+    #write_report(data, selected_template)
 
 
 

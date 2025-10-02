@@ -1,19 +1,20 @@
 {
+    "template": "PLANTILLA INF_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB",
 
+    "fields": {
 
+        "XX_FECHA_ELABORACION_XX": null,
+        "XX_REVISADO_POR_XX": null,
+        "XX_ROL_REVISADOR_XX": null,
+        "XX_AUTORIZADO_POR_XX": null,
+        "XX_AUTORIZADO_POR_ROL_XX": null,
+        "XX_INFORME_NUMERO_XX": null,
+        "XX_FECHA_MONITOREO_XX": null,
+        "XX_FECHA_EMISION_INFORME_XX": null,
+        "XX_FECHA_MONITOREO_LITERAL_XX": null,
+        "XX_MES_LITERAL_XX": null,
+        "XX_PLAN_DE_MUESTREO_XX": null,
+        "CANTIDAD_MUESTRAS": null
 
-  "template": "PLANTILLA INF_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB",
-  "fields": {
-
-    "XX_FECHA_ELABORACION_XX":  "",
-    "XX_REVISADO_POR_XX": "",
-    "XX_ROL_REVISADOR_XX": "",
-    "XX_AUTORIZADO_POR_XX": "",
-    "XX_DIRECTORA_DE_PROYECTOS_XX": "",
-    "XX_INFORME_NUMERO_XX": ""
-
-
-  }
-
-
+    }
 }

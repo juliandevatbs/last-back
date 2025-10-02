@@ -1,6 +1,8 @@
 from openpyxl.reader.excel import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
+from core.utils.data.date_literal import date_literal
+from core.utils.data.get_today_date import get_today_date
 
 
 def read_main_sheet_excel(workbook) -> dict :
@@ -15,17 +17,31 @@ def read_main_sheet_excel(workbook) -> dict :
         sampling_data = {}
 
         # Storage client and main report data
-        data_client["client_name"] = main_sheet["B2"].value or "Not client found"
+        data_client["XX_FECHA_ELABORACION_XX"] = get_today_date()
+        data_client["XX_REVISADO_POR_XX"] = "Andrés Amado"
+        data_client["XX_ROL_REVISADOR_XX"] = "Profesional de proyectos"
+        data_client["XX_AUTORIZADO_POR_XX"] = "Claudia Calderón"
+        data_client["XX_AUTORIZADO_POR_ROL_XX"] = "Directora de Proyectos"
+        data_client["XX_INFORME_NUMERO_XX"] = 12701
+        data_client["XX_FECHA_EMISION_INFORME_XX"] = str(get_today_date()).split(" ")[0]
+
+
+
+        """data_client["client_name"] = main_sheet["B2"].value or "Not client found"
         data_client["contact_client_name"] = main_sheet["B4"].value or "Not client contact name found"
         data_client["client_contact"] = main_sheet["B6"].value or "Not client contact found"
         data_client["prepared_by"] = main_sheet["E2"].value or "No manufacturer found"
         data_client["report_type"] = "INFORME DE MONITOREO"
-        data_client["report_number"] = 12701
+
         data_client["municipality"] = main_sheet["B7"].value or "No municipality found"
 
         #Storage sampling importation data
-        sampling_data["sampling_site"] = main_sheet["E4"].value or "Not sampling site"
-        sampling_data["sampling_date"] = main_sheet["E5"].value or "Not sampling date"
+        sampling_data["sampling_site"] = main_sheet["E4"].value or "Not sampling site"""
+
+        sampling_data["XX_FECHA_MONITOREO_XX"] = str(main_sheet["E5"].value).split(" ")[0] or "Not sampling date"
+        sampling_data["XX_FECHA_MONITOREO_LITERAL_XX"] = date_literal(str(main_sheet["E5"].value).split(" ")[0])
+        sampling_data["XX_MES_LITERAL_XX"] = date_literal(str(main_sheet["E5"].value).split(" ")[0]).split(" ")[2]
+        sampling_data["XX_PLAN_DE_MUESTREO_XX"] = main_sheet["E9"].value or "Not sampling plan"
 
 
         return data_client, sampling_data
@@ -59,8 +75,13 @@ def read_chain_of_custody(workbook) -> dict:
 
         chemilab_code = chain_of_custody_sheet[f"A{INITIAL_ROW}"].value
 
+
+
+
+
+
         # Verify if the row has data
-        if chemilab_code:
+        if chemilab_code  :
 
             sample["chemilab_code"] = chemilab_code
 
@@ -89,6 +110,8 @@ def read_chain_of_custody(workbook) -> dict:
         samples[chemilab_code] = sample
 
         INITIAL_ROW += 1
+
+    samples["CANTIDAD_MUESTRAS"] = len(samples)
 
     return samples
 

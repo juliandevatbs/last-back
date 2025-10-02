@@ -23,3 +23,7 @@ class KeyNotFound(Exception):
 class ServerClientException(Exception):
 
     pass
+
+class NoJson(Exception):
+
+    pass

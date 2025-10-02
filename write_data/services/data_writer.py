@@ -39,23 +39,11 @@ class WordService:
         #IMPORTANT CONSTRAINTS
         self.font = "Century Gothic"
 
-
-
         # Get data from the dict
         self.main_data = self.data_to_write["main_data"]
         self.sampling_data = self.data_to_write["sampling_data"]
         self.samples = self.data_to_write["samples"]
         self.surveillance_data = self.data_to_write["surveillance_data"]
-
-
-        if self.surveillance_data:
-
-            print(self.surveillance_data)
-
-        else:
-
-            print("NO EXISTEEEEEEEEEEEEEEEE")
-
 
         # General data for pages
         self.sampling_site = self.sampling_data["sampling_site"]
