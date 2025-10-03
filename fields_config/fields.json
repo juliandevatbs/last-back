@@ -1,8 +1,6 @@
 {
     "template": "PLANTILLA INF_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB",
-
     "fields": {
-
         "XX_FECHA_ELABORACION_XX": null,
         "XX_REVISADO_POR_XX": null,
         "XX_ROL_REVISADOR_XX": null,
@@ -14,7 +12,15 @@
         "XX_FECHA_MONITOREO_LITERAL_XX": null,
         "XX_MES_LITERAL_XX": null,
         "XX_PLAN_DE_MUESTREO_XX": null,
-        "CANTIDAD_MUESTRAS": null
-
+        "XX_CANTIDAD_MUESTRAS_XX": null,
+        "XX_RESULTADOS_LAB_XX": null,
+        "XX__XX": null,
+        "XX__XX": null
     }
 }
+
+
+mb 47
+lcs 48
+49
+dup 50

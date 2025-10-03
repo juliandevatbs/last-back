@@ -18,11 +18,23 @@ logger = logging.getLogger(__name__)
 def read_excel(file_bytes):
 
     #Open the workbook from here to avoid opening it multiple times from the reading functions
+
     workbook = load_workbook(io.BytesIO(file_bytes), data_only=True)
+
+
+    if workbook:
+
+        print("WORKBOOK BIEN")
+
+    else:
+
+        print("WORKBOOK FALLIDO")
 
     # Read the different sheets
     try:
         data_dictionary = data_constructor(workbook)
+
+        return data_dictionary
 
     except Exception as ex:
 
@@ -31,7 +43,7 @@ def read_excel(file_bytes):
     # Close workbook to free up resources
     workbook.close()
 
-    return data_dictionary
+    return {}
 
 def write_report(data, selected_template):
 
@@ -122,14 +134,20 @@ def general_task(file_bytes,selected_template, selected_options, selected_report
     # Load the updated json data to the writer
     writer_instance.load_json_config()
 
+
+
+
+
     # Open word template to write
     writer_instance.load_word_template()
 
     # Main writer calls all of writer functions in a specific order
     writer_instance.main_writer()
 
+    writer_instance.fill_monitoring_table(data)
+
     # Clen the json config to reuse with other report
-    json_builder_instance.clean_json()
+    #json_builder_instance.clean_json()
 
     # Save the document with all changes
     writer_instance.save_document("templates/final.docx")
