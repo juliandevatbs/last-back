@@ -3,6 +3,8 @@ from openpyxl.utils.exceptions import InvalidFileException
 
 from core.utils.data.date_literal import date_literal
 from core.utils.data.get_today_date import get_today_date
+import xlwings as xw
+
 
 
 def read_main_sheet_excel(workbook) -> dict:
@@ -165,19 +167,80 @@ def read_punctual_surveillance_chain(workbook) -> dict:
     return punctual_data
 
 
+import xlwings as xw
+
+def read_sample_information(file_path: str) -> dict:
+    samples_information = {}
+
+    try:
+        app = xw.App(visible=False)
+        wb = app.books.open(file_path)
+
+        sheet_names = [s.name for s in wb.sheets]
+        if "AFLUENTE 1" not in sheet_names or "EFLUENTE 2" not in sheet_names:
+            #print("NO EXISTEN HOJAS AFLUENTES Y/O EFLUENTES")
+            wb.close()
+            app.quit()
+            return samples_information
+
+        sheet_one = wb.sheets["AFLUENTE 1"]
+        sheet_two = wb.sheets["EFLUENTE 2"]
+
+
+        sheet_one_texts = {}
+        for shape in sheet_one.shapes:
+            if shape.text:
+                text = shape.text.strip()
+                if ":" in text:
+                    text = text.split(":", 1)[1].strip()
+                sheet_one_texts["descripcion_punto"] = text
+
+        print("Leyendo formas de EFLUENTE 2...")
+        sheet_two_texts = {}
+        for shape in sheet_two.shapes:
+            if shape.text:
+                text = shape.text.strip()
+                if ":" in text:
+                    text = text.split(":", 1)[1].strip()
+                sheet_two_texts["descripcion_punto"] = text
+        # Construir resultado
+        samples_information = {
+            "AFLUENTE_1": sheet_one_texts,
+            "EFLUENTE_2": sheet_two_texts
+        }
+
+
+
+        wb.close()
+        app.quit()
+
+    except Exception as e:
+        print(f"Error al leer shapes con xlwings: {e}")
+        try:
+            app.quit()
+        except:
+            pass
+
+    return samples_information
+
+
+
+
 def data_constructor(workbook) -> dict:
     try:
 
         main_data, sampling_data = read_main_sheet_excel(workbook)
         samples_data = read_chain_of_custody(workbook)
         surveillance_data = read_punctual_surveillance_chain(workbook)
+        samples_information = read_sample_information(r"C:\Code\automatizacion_informes\BackEnd\templates\2 PM 20164 (2025-04-11)ACEITOSAS CPF CUPIAGUA_Muestreos Barranca.xlsx")
 
         return {
 
             "main_data": main_data,
             "sampling_data": sampling_data,
             "samples": samples_data,
-            "surveillance_data": surveillance_data
+            "surveillance_data": surveillance_data,
+            "samples_information": samples_information
         }
 
     except IndexError:

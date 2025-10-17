@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from metrics_data.models import Reporter
 from write_data.models import Employee
 
 
@@ -7,7 +8,7 @@ class MetricsDataSerializer(serializers.ModelSerializer):
 
     class Meta:
 
-        model= Employee
-        fields = ['id', 'employee_name']
+        model= Reporter
+        fields = ['id', 'reporter_name']
 
 

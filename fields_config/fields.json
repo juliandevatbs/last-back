@@ -1,26 +1,18 @@
 {
     "template": "PLANTILLA INF_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB",
     "fields": {
-        "XX_FECHA_ELABORACION_XX": null,
-        "XX_REVISADO_POR_XX": null,
-        "XX_ROL_REVISADOR_XX": null,
-        "XX_AUTORIZADO_POR_XX": null,
-        "XX_AUTORIZADO_POR_ROL_XX": null,
-        "XX_INFORME_NUMERO_XX": null,
-        "XX_FECHA_MONITOREO_XX": null,
-        "XX_FECHA_EMISION_INFORME_XX": null,
-        "XX_FECHA_MONITOREO_LITERAL_XX": null,
-        "XX_MES_LITERAL_XX": null,
-        "XX_PLAN_DE_MUESTREO_XX": null,
-        "XX_CANTIDAD_MUESTRAS_XX": null,
-        "XX_RESULTADOS_LAB_XX": null,
-        "XX__XX": null,
-        "XX__XX": null
-    }
+        "XX_FECHA_MONITOREO_LITERAL_XX": "11 de Abril de 2025",
+        "XX_MES_LITERAL_XX": "Abril",
+        "XX_FECHA_ELABORACION_XX": "2025-10-15",
+        "XX_PLAN_DE_MUESTREO_XX": 20164,
+        "XX_INFORME_NUMERO_XX": 12701,
+        "XX_AUTORIZADO_POR_ROL_XX": "Directora de Proyectos",
+        "XX_FECHA_EMISION_INFORME_XX": "2025-10-15",
+        "XX_REVISADO_POR_XX": "Andrés Amado",
+        "XX_FECHA_MONITOREO_XX": "2025-04-11",
+        "XX_AUTORIZADO_POR_XX": "Claudia Calderón",
+        "XX_ROL_REVISADOR_XX": "Profesional de proyectos",
+        "XX_RESOLUCIÓN_XX": "Resolución 1042 del 26 de septiembre de 2024"
+    },
+    "config": ""
 }
-
-
-mb 47
-lcs 48
-49
-dup 50

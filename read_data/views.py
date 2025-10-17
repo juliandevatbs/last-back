@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import threading
-from core.tasks import read_excel, general_task
+from core.tasks import general_task, main_thread
 from read_data.services.excel_reader import read_main_sheet_excel, read_chain_of_custody
 import json
 
@@ -39,7 +39,7 @@ class ReadFile(APIView):
         file_bytes = uploaded_file.read()
 
         # Launch a thread to process the excel without block the response
-        thread = threading.Thread(target=general_task , args=(file_bytes, selected_template, [], reporter))
+        thread = threading.Thread(target=general_task , args=(file_bytes, ))
         thread.start()
 
         #Return 200 OK response
