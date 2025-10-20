@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'rest_framework',
     "corsheaders",
     "metrics_data",
-    "intelligent_model"
+    "intelligent_model",
+    "graphics"
 
 ]
 

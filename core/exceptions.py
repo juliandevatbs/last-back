@@ -1,5 +1,17 @@
 # Custom exceptions for project
 
+
+class BasicDataSheetNotFound(Exception):
+    pass
+
+class NoChainOfCustodySheet(Exception):
+    pass
+
+class InvalidWorkBookError(Exception):
+    
+    pass
+
+
 class NoDataError(Exception):
 
     # No data received to write

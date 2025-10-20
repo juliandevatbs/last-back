@@ -112,3 +112,18 @@ def general_task(file_bytes):
         logger.error(f"Error en general_task: {e}")
         print(f"Error en general_task: {e}")
         raise
+    
+    
+def testing_task():
+    
+    try:
+        
+        return 
+        
+    except Exception as e:
+        
+        print("")
+    
+    
+    
+    return
