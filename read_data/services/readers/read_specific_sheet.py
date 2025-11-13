@@ -54,8 +54,6 @@ def read_sample_information(file_path: str) -> dict:
         print(f"Total de formas encontradas en CADENA: {shapes_found}")
 
 
-
-
         # Construir resultado
         samples_information = {
             "AFLUENTE_1": sheet_one_texts,
@@ -89,7 +87,6 @@ def read_specific_sheet(file_path, sheet_name: str):
 
         sheet_names = [s.name for s in wb.sheets]
 
-        print(sheet_names)
 
         if sheet_name not in sheet_names:
             return ''
@@ -153,10 +150,6 @@ def read_specific_sheet_data(workbook, sheet_name: str, day_type_start_row=14, n
 
 
         return clima, temperatura_ambiente, humedad_relativa, altitud
-
-
-
-
 
     except KeyError:
 

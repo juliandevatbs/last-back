@@ -4,44 +4,41 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import threading
-from core.tasks import general_task, main_thread
-from read_data.services.excel_reader import read_main_sheet_excel, read_chain_of_custody
+from core.Flows import main_flow
 import json
+
+from core.Flows.main_flow import MainFlow
+
 
 class ReadFile(APIView):
 
     # Post method (Receives the file and the selected template for the report generation)
     def post(self ,request, *args, **kwargs):
 
+        print("POST:", request.POST, "FILES:", request.FILES)
         # Get the file from the formData
-        uploaded_file = request.FILES.get('file')
+        chain_of_custody = request.FILES.get('file')
 
         # Get the template data from the formData
-        selected_template_str = request.POST.get('template')
-        selected_template = json.loads(selected_template_str) if selected_template_str else None
-
-        # Get the options from the formData
-        selected_options = request.POST.get('options')
-
-        # Get the reporter from the formData
-        reporter = request.POST.get('reporter')
+        template_name = request.POST.get('template')
 
 
-        if not uploaded_file:
+
+        if not chain_of_custody:
             return Response({"error": "The file was not sent"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not selected_template:
+        if not template_name:
             return Response({"error": "The template was not sent"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not reporter:
-            return Response({"error": "The reporter infor was not sent"}, status=status.HTTP_400_BAD_REQUEST)
 
-        file_bytes = uploaded_file.read()
+        file_bytes = chain_of_custody.read()
 
-        # Launch a thread to process the excel without block the response
-        thread = threading.Thread(target=general_task , args=(file_bytes, ))
+
+        # Launch a thread to process the main flow
+        thread = threading.Thread(target=MainFlow().main_flow_caller , args=(file_bytes, template_name
+                    ))
         thread.start()
 
         #Return 200 OK response
-        return Response({"Success": "File opened succesfully"}, status=status.HTTP_200_OK)
+        return Response({"Success": "Data received"}, status=status.HTTP_200_OK)
 

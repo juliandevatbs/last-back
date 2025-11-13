@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
 
 
-    path('api/reporters/', views.get_reporters, name='reporters')
+    path('reporters/', views.get_reporters, name='reporters')
 
 
 ]

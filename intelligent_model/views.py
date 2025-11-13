@@ -5,7 +5,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.tasks import get_feedback_from_gemini
 
 
 class FeedBackProvider(APIView):
@@ -24,8 +23,8 @@ class FeedBackProvider(APIView):
         file_bytes = docx_file.read()
 
         # Launch a thread to process the word file without block the response
-        thread = threading.Thread(target=get_feedback_from_gemini, args=(file_bytes, ))
-        thread.start()
+        #thread = threading.Thread(target=get_feedback_from_gemini, args=(file_bytes, ))
+        #thread.start()
 
 
         # If everything goes well, return status 200

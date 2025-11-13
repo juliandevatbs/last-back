@@ -4,93 +4,84 @@ from typing import Optional, Dict, Any
 
 from openpyxl.reader.excel import load_workbook
 
-from read_data.services.excel_reader import data_constructor
 
 
 class JsonBuilder():
     """Manages excel data extraction and JSON configuration updates"""
 
-    def __init__(self, file_bytes):
+    def __init__(self):
         """
         Initialize JsonBuilder with excel file bytes
 
         args:
             file_bytes = Excel file content as bytes
         """
-        self.config_path = 'fields_config/fields.json'
+        self.json_object = None
+        self.json_name = None
 
-        # Load and parse excel data
-        self.excel_object = load_workbook(io.BytesIO(file_bytes), data_only=True)
-        self.super_data = data_constructor(self.excel_object)
 
-        # Extract specific data sections
-        self.main_data = self.super_data.get("main_data", {})
-        self.sampling_data = self.super_data.get("sampling_data", {})
-        self.samples = self.super_data.get("samples", {})
-        self.surveillance_data = self.super_data.get("surveillance_data", {})
 
-        # JSON configuration (loaded lazily)
-        self._json_config: Optional[Dict[str, Any]] = None
-        self._json_config_labels: Optional[Dict[str, Any]] = None
-
-    @property
-    def json_config(self) -> Dict[str, Any]:
-        """Get the JSON config, loading it if not already loaded"""
-        if self._json_config is None:
-            self.load_json()
-        return self._json_config
-
-    @property
-    def json_config_labels(self) -> Dict[str, Any]:
-
-        """Get the fields section of the json config"""
-        if self._json_config_labels is None:
-            # Ensure json_config is loaded first
-            _ = self.json_config
-        return self._json_config_labels
-
-    def load_json(self) -> None:
-
-        """Load json configuration from file"""
+    def load_json(self, json_name: str):
 
         try:
-            with open(self.config_path, 'r', encoding='utf-8') as json_file:
-                self._json_config = json.load(json_file)
-                self._json_config_labels = self._json_config.get("fields", {})
-        except FileNotFoundError:
-            raise FileNotFoundError(
-                f"Configuration file not found: {self.config_path}"
-            )
-        except json.JSONDecodeError as e:
-            raise ValueError(
-                f"Invalid JSON in configuration file: {e}"
-            )
+            self.json_name = json_name
+            with open(f'fields_config/{json_name}.json', 'r', encoding='utf-8') as config_inf:
+                self.json_object = json.load(config_inf)
 
-    def update_json(self):
+        except Exception as ex:
+            raise Exception(f"Error cargando JSON: {ex}")
 
-        """Write the excel data to the JSON config"""
-        # Ensure json is loaded
-        _ = self.json_config
+    def update_json_normal_values(self, basic_data):
+        if self.json_object:
+            encabezado_values = self.json_object["ENCABEZADO_CONFIG"]["VARIABLES"]
+            portada_values = self.json_object["PORTADA_CONFIG"]["VARIABLES"]
+            generales_values = self.json_object["HOJAS_GENERALES_CONFIG"]["VARIABLES"]
 
-        # WRITE THE EXCEL DATA TO THE CONFIG JSON
-        for excel_key, excel_value in self.main_data.items() | self.sampling_data.items():
-            self._json_config_labels[excel_key] = excel_value
+            updated_keys = []
+            for key, item in basic_data.items():
+                if key in encabezado_values:
+                    encabezado_values[key] = item
+                    updated_keys.append(f"ENCABEZADO: {key}")
+                elif key in portada_values:
+                    portada_values[key] = item
+                    updated_keys.append(f"PORTADA: {key}")
+                elif key in generales_values:
+                    generales_values[key] = item
+                    updated_keys.append(f"GENERALES: {key}")
 
-        # SAVE THE JSON
-        with open(self.config_path, 'w', encoding='utf-8') as json_file:
-            json.dump(self._json_config, json_file, indent=4, ensure_ascii=False)
+            print("Variables actualizadas:", updated_keys)  # Debug
 
-    def clean_json(self):
+    def update_json_samples(self, samples_data):
 
-        """Reset all fields in the JSON config to None"""
-        # Ensure json is loaded
-        _ = self.json_config
+        if self.json_object and "HOJAS_MUESTRAS" in self.json_object:
 
-        for key in self._json_config_labels.keys():
+            if "DATOS_MUESTRAS" not in self.json_object:
 
-            self._json_config_labels[key] = None
+                self.json_object["DATOS_MUESTRAS"] = {}
 
-        # SAVE THE JSON
-        with open(self.config_path, 'w', encoding='utf-8') as json_file:
+            self.json_object["DATOS_MUESTRAS"] = samples_data
 
-            json.dump(self._json_config, json_file, indent=4, ensure_ascii=False)
+    def save_json(self, json_name: str):
+
+        save_name = json_name if json_name else self.json_name
+
+        if self.json_object and self.json_name:
+            try:
+                with open(f'fields_config/{self.json_name}.json', 'w', encoding='utf-8') as config_inf:
+                    json.dump(self.json_object, config_inf, indent=2, ensure_ascii=False)
+            except Exception as ex:
+                raise Exception(f"Error guardando JSON: {ex}")
+        else:
+            raise Exception("No hay JSON cargado para guardar")
+
+
+
+
+
+
+
+
+
+
+
+

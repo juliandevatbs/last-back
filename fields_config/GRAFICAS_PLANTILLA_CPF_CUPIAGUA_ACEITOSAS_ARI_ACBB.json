@@ -1,0 +1,77 @@
+{
+
+  "RUTA_EXCEL_GRAFICAS": "C:\\Code\\automatizacion_informes\\BackEnd\\templates\\INF_14359_PM_20634_CPF_CUPIAGUA_AGUAS_ACEITOSAS_ARI_GRÁFICAS.xlsx",
+
+
+  "INSITU": {
+
+
+    "HOJA_INSITU": "IN SITU",
+    "TABLAS_INSITU": {
+
+      "AFLUENTE_TABLA": {
+        "FILA_INICIAL": 9,
+        "COLUMNAS": {
+          "HORA": "A",
+          "VALOR_REPORTADO_PH": "B",
+          "INCERTIDUMBRE_CALCULADA_PH": "C",
+          "VALOR_REPORTADO_SOLIDOS": "D",
+          "INCERTIDUMBRE_CALCULADA_SOLIDOS": "E",
+          "CAUDAL": "F"
+        }
+      },
+
+
+      "EFLUENTE_TABLA": {
+          "FILA_INICIAL": 9,
+          "COLUMNAS": {
+            "HORA": "H",
+            "VALOR_REPORTADO_PH": "I",
+            "INCERTIDUMBRE_CALCULADA_PH": "J",
+            "VALOR_REPORTADO_SOLIDOS": "K",
+            "INCERTIDUMBRE_CALCULADA_SOLIDOS": "L",
+            "CAUDAL": "M"
+          }
+
+        }
+      },
+
+      "INFO_TABLAS_LECTURA": {
+
+        "AFLUENTE": {
+        "HOJA_COD_MUESTRA": "CADENA DE CUSTODIA",
+        "HOJA_EXCEL": "AFLUENTE 1",
+        "NOMBRE_TABLA": "AFLUENTE SISTEMA AGUAS LLUVIAS OCASIONALMENTE ACEITOSAS DE CPF CUPIAGUA",
+        "COD_MUESTRA_UBI": "A23",
+        "FILA_INICIAL_DATOS": 75,
+        "COLUMNA_INICIAL_DATOS": "C",
+        "CANTIDAD_REGISTROS": 9,
+        "COLUMNAS_REGISTROS": {
+          "ALICUOTA": "B",
+          "HORA": "C",
+          "PH": "D",
+          "SOLIDOS SEDIMENTABLES": "L",
+          "CAUDALES": "T"
+        }
+      },
+      "EFLUENTE": {
+        "HOJA_COD_MUESTRA": "CADENA DE CUSTODIA",
+        "HOJA_EXCEL": "EFLUENTE 2",
+        "NOMBRE_TABLA": "EFLUENTE SISTEMA AGUAS LLUVIAS OCASIONALMENTE ACEITOSAS DE CPF CUPIAGUA",
+        "COD_MUESTRA_UBI": "A25",
+        "FILA_INICIAL_DATOS": 75,
+        "COLUMNA_INICIAL_DATOS": "C",
+        "CANTIDAD_REGISTROS": 9,
+        "COLUMNAS_REGISTROS": {
+          "ALICUOTA": "B",
+          "HORA": "C",
+          "PH": "D",
+          "SOLIDOS SEDIMENTABLES": "L",
+          "CAUDALES": "T"
+        }
+      }
+
+      }
+
+    }
+  }

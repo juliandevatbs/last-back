@@ -1,0 +1,85 @@
+{
+    
+    "ENCABEZADO_CONFIG": {
+        
+        "XX_ELABORADO_XX": ""
+        
+        
+    },
+    
+    "PORTADA_CONFIG": {
+        
+        "VARIABLES": {
+            
+            "XX_REVISADO_POR_XX": "",
+            "XX_AUTORIZADO_POR_XX": "",
+            "XX_INFORME_NUMERO_XX": "" ,
+            "XX_FECHA_MONITOREO_XX": "",
+            "XX_FECHA_EMISION_INFORME_XX": ""
+        }   
+        
+    },
+    
+    
+    "HOJAS_GENERALES_CONFIG": {
+        
+        "VARIABLES": {
+            
+            "XX_FECHA_CARACTERIZACION_LITERAL_XX": ""
+            
+        },
+        
+        "TABLAS": {
+            
+            "TABLAS_DESCRIPCION_PUNTOS_MONITOREO": {
+                
+                "VARIABLES": {
+                    
+                    "XX_PLAN_MUESTREO_XX": {
+                        
+                        "FILA": 1,
+                        "VALOR": ""
+                        
+                    },
+                    
+                    "XX_CODIGO_MUESTRA_XX": {
+                        
+                        "FILA": 2,
+                        "COLUMNA": 0,
+                        "VALOR": ""
+                        
+                        
+                    },
+                    
+                    "XX_FECHA_MUESTRA_XX": {
+                        
+                        "FILA": 2,
+                        "COLUMNA": 1,
+                        "VALOR": ""
+                        
+                        
+                    },
+                    
+                    "XX_HORA_MUESTRA_XX": {
+                        
+                        "FILA": 2,
+                        "COLUMNA": 2
+                        
+                    }
+                    
+                }
+                
+                
+                
+                
+                
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    
+}

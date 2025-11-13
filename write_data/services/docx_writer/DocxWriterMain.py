@@ -9,6 +9,7 @@ from write_data.services.docx_writer.write_monitoring_tabe import write_monitori
 class DocxWriterMain:
 
     def __init__(self):
+
         self.docx = None
         self.basic_data = None
         self.samples_data = None

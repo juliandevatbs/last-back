@@ -1,48 +1,58 @@
 import json
+from datetime import datetime
+
 from docx import Document
+
+from core.utils.data.date_literal import date_literal
 
 
 class Writer():
 
-    def __init__(self):
+    def __init__(self, config_path: str, template_path: str):
+        self.config_path = config_path
+        self.template_path = template_path
         self.json_config = None
-        self.json_config_fields = None
         self.word_template = None
 
-    # GET THE JSON CONFIG
     def load_json_config(self):
-        with open('fields_config/fields.json', 'r', encoding='utf-8') as json_file:
+        with open(self.config_path, 'r', encoding='utf-8') as json_file:
             self.json_config = json.load(json_file)
 
-        self.json_config_fields = self.json_config["fields"]
-
-    # GET THE WORD TEMPLATE TO WRITE
     def load_word_template(self):
-        self.word_template = Document("templates/PLANTILLA INF_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB.docx")
+        self.word_template = Document(self.template_path)
 
-    # SEARCH A LABEL AND REPLACE IT
     def search_and_replace(self, label: str, to_write: str) -> int:
-
         replacements = 0
+        print(f"🔍 Buscando label: {label}")
 
-        # 1. Search in normal paragraphs
-        for paragraph in self.word_template.paragraphs:
-            if label in paragraph.text:
-                print(f"label reemplazado -> {label}")
-                replacements += self._replace_in_paragraph(paragraph, label, to_write)
+        try:
+            print(" → Revisando párrafos...")
+            for i, paragraph in enumerate(self.word_template.paragraphs):
+                if i % 50 == 0:
+                    print(f"   > Párrafo #{i}")
+                if label in paragraph.text:
+                    print(f"   ⚡ Reemplazo en párrafo -> {label}")
+                    replacements += self._replace_in_paragraph(paragraph, label, to_write)
 
-        # 2. Search in all file tables
-        for table in self.word_template.tables:
-            replacements += self._search_in_table(table, label, to_write)
+            print(" → Revisando tablas...")
+            for t_index, table in enumerate(self.word_template.tables):
+                print(f"   > Tabla #{t_index}")
+                replacements += self._search_in_table(table, label, to_write)
 
-        # 3. Search in the header tables
-        for section in self.word_template.sections:
-            replaced = self._search_in_header(section.header, label, to_write)
-            if replaced > 0:
-                print(f"label reemplazado en header -> {label}")
-                replacements += replaced
+            print(" → Revisando headers...")
+            for s_index, section in enumerate(self.word_template.sections):
+                print(f"   > Header #{s_index}")
+                replaced = self._search_in_header(section.header, label, to_write)
+                if replaced > 0:
+                    print(f"   ⚡ Reemplazo en header -> {label}")
+                    replacements += replaced
 
-        return replacements
+            print(f"✅ Fin de reemplazo para {label} ({replacements} reemplazos)")
+            return replacements
+
+        except Exception as e:
+            print(f"❌ Error en search_and_replace para {label}: {e}")
+            raise
 
     def _search_in_header(self, header, search_text, replace_text):
         replacements = 0
@@ -56,7 +66,6 @@ class Writer():
 
         return replacements
 
-    # REPLACE A LABEL INTO A PARAGRAPH
     def _replace_in_paragraph(self, parrafo, texto_buscar, texto_reemplazo):
         replacements = 0
 
@@ -70,7 +79,6 @@ class Writer():
 
         return replacements
 
-    # SEARCH ANY LABEL INTO TABLES
     def _search_in_table(self, table, texto_buscar, texto_reemplazo):
         replacements = 0
 
@@ -86,13 +94,56 @@ class Writer():
 
         return replacements
 
-    def main_writer(self):
-        """
-        Recorre todas las claves del JSON y las reemplaza en el documento
-        """
-        for key, value in self.json_config_fields.items():
-            self.search_and_replace(key, value)
+    from datetime import datetime
+    from core.utils.data import date_literal
 
-    # SAVE DOCUMENT WITH CHANGES
-    def save_document(self, output_path):
+
+
+    def map_data_to_variables(self, basic_data, samples_data, specific_data):
+            mapped_data = {}
+
+            fecha_monitoreo = None
+            if basic_data:
+                fecha_monitoreo = basic_data.get("FECHA_MONITOREO", "")
+                mapped_data["XX_INFORME_NUMERO_XX"] = basic_data.get("INFORME_NUMERO", "")
+
+            if fecha_monitoreo:
+                mapped_data["XX_FECHA_MONITOREO_XX"] = fecha_monitoreo
+
+                try:
+                    if isinstance(fecha_monitoreo, str):
+                        fecha_dt = datetime.strptime(fecha_monitoreo, "%Y-%m-%d")
+                    else:
+                        fecha_dt = fecha_monitoreo
+
+                    mapped_data["XX_MES_LITERAL_XX"] = fecha_dt.strftime("%B").capitalize()
+
+                    mapped_data["XX_FECHA_MONITOREO_LITERAL_XX"] = date_literal(fecha_dt)
+
+                except Exception as ex:
+                    print(f"Error procesando fecha_monitoreo: {ex}")
+
+            # 🔹 3. Valores que no vienen del Excel (se pueden parametrizar o dejar por defecto)
+            mapped_data["XX_FECHA_ELABORACION_XX"] = datetime.now().strftime("%Y-%m-%d")
+            mapped_data["XX_REVISADO_POR_XX"] = "Claudia Calderón"
+            mapped_data["XX_ROL_REVISADOR_XX"] = "Profesional de proyectos"
+            mapped_data["XX_AUTORIZADO_POR_XX"] = "Claudia Calderón"
+            mapped_data["XX_AUTORIZADO_POR_ROL_XX"] = "Directora de Proyectos"
+
+            return mapped_data
+
+    def write_data(self, basic_data, samples_data, specific_data):
+        mapped_data = self.map_data_to_variables(basic_data, samples_data, specific_data)
+
+
+        for k, v in mapped_data.items():
+            print(f"   {k}: {repr(v)}")
+
+        for label, value in mapped_data.items():
+            if value:
+                self.search_and_replace(label, value)
+            else:
+                print(f"{label} está vacío, se omite")
+
+    def save_document(self, output_path: str):
         self.word_template.save(output_path)

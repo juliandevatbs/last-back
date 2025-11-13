@@ -1,88 +1,71 @@
-from math import inf
 from core.utils.data.incertidumbre_autom import incertidumbre_auto
 
 
 def ph_reader(workbook, sheet_name: str, columns: dict, initial_row: int) -> dict:
     try:
+        sheet = workbook[sheet_name]
         data_rows = {}
-        sheet_to_read = workbook[sheet_name]
         current_row = initial_row
-        sum_reported_values = 0
-        sum_caudal_values = 0
 
-        min_valor_reportado = float(inf)
-        min_valor_reportado_solidos = '<0,1'
-        min_valor_reportado_caudales = float(inf)
-
-        max_valor_reportado = float(-inf)
-        max_valor_reportado_solidos = '<0,1'
-        max_valor_reportado_caudales = float(-inf)
+        sum_ph = 0
+        sum_caudal = 0
+        min_ph = float('inf')
+        max_ph = float('-inf')
+        min_caudal = float('inf')
+        max_caudal = float('-inf')
 
         while True:
-            init_cell_address = f"{columns.get('initial_row')}{current_row}"
-            init_cell_value = sheet_to_read[init_cell_address].value
+            index_cell = f"{columns['COLUMNA_INDICE']}{current_row}"
+            index_val = sheet[index_cell].value
 
-            if init_cell_value is None or str(init_cell_value).strip() == '':
+            if index_val is None or str(index_val).strip() == '':
                 break
 
-            data_row = {}
+            ph_val = sheet[f"{columns['PH']}{current_row}"].value
+            caudal_val = sheet[f"{columns['CAUDAL']}{current_row}"].value
+            solidos_val = sheet[f"{columns['SOLIDOS_SEDIMENTABLES']}{current_row}"].value
+            hora_val = sheet[f"{columns['HORA']}{current_row}"].value
 
-            ph_value = sheet_to_read[f"{columns.get('ph_column')}{current_row}"].value
-            caudal_value = sheet_to_read[f"{columns.get('caudal_column')}{current_row}"].value
-            solidos_value = sheet_to_read[f"{columns.get('solidos_sedimentables_column')}{current_row}"].value
+            if ph_val is not None:
 
-            data_row["hour"] = sheet_to_read[f"{columns.get('hour_column')}{current_row}"].value
-            data_row["ph"] = ph_value
-            data_row["caudal"] = str(caudal_value)[:4]
-            data_row["solidos_sedimentables"] = solidos_value
-            data_row["incertidumbre"] = incertidumbre_auto(ph_value)
+                if hasattr(hora_val, 'strftime'):
+                    hora_str = hora_val.strftime('%H:%M')
+                else:
+                    hora_str = str(hora_val) if hora_val else ""
 
-            sum_reported_values += ph_value
-            sum_caudal_values += caudal_value
+                data_rows[index_val] = {
+                    "hour": hora_str,
+                    "ph": ph_val,
+                    "caudal": str(caudal_val)[:4] if caudal_val else "",
+                    "solidos_sedimentables": solidos_val,
+                    "incertidumbre": incertidumbre_auto(ph_val)
+                }
 
-            if ph_value < min_valor_reportado:
-                min_valor_reportado = ph_value
+                sum_ph += ph_val
+                sum_caudal += caudal_val if caudal_val else 0
+                min_ph = min(min_ph, ph_val)
+                max_ph = max(max_ph, ph_val)
 
-            if ph_value > max_valor_reportado:
-                max_valor_reportado = ph_value
+                if caudal_val:
+                    min_caudal = min(min_caudal, caudal_val)
+                    max_caudal = max(max_caudal, caudal_val)
 
-            if caudal_value < min_valor_reportado_caudales:
-                min_valor_reportado_caudales = caudal_value
-
-            if caudal_value > max_valor_reportado_caudales:
-                max_valor_reportado_caudales = caudal_value
-
-            data_rows[init_cell_value] = data_row
             current_row += 1
 
-        num_registros = len(data_rows)
-
-        if num_registros > 0:
-            media_valores = sum_reported_values / num_registros
-            media_caudal = sum_caudal_values / num_registros
-
+        if data_rows:
+            count = len(data_rows)
             data_rows["_metadata"] = {
-                "media_valores": f"{media_valores:.3}",
-                "media_incertidumbre": incertidumbre_auto(media_valores),
-                "media_caudal": f"{media_caudal:.3}",
-                "valor_minimo_reportado": min_valor_reportado,
-                "valor_maximo_reportado": max_valor_reportado,
-                "min_valor_reportado_solidos": min_valor_reportado_solidos,
-                "max_valor_reportado_solidos": max_valor_reportado_solidos,
-                "suma_total": sum_reported_values,
-                "num_registros": num_registros,
-                "min_valor_reportado_caudales": str(min_valor_reportado_caudales)[:4],
-                "max_valor_reportado_caudales": str(max_valor_reportado_caudales)[:4]
+                "media_valores": round(sum_ph / count, 3) if count > 0 else 0,
+                "media_incertidumbre": incertidumbre_auto(sum_ph / count) if count > 0 else "",
+                "media_caudal": round(sum_caudal / count, 3) if count > 0 else 0,
+                "valor_minimo_reportado": min_ph if min_ph != float('inf') else 0,
+                "valor_maximo_reportado": max_ph if max_ph != float('-inf') else 0,
+                "min_valor_reportado_caudales": str(round(min_caudal, 2))[:4] if min_caudal != float('inf') else "0",
+                "max_valor_reportado_caudales": str(round(max_caudal, 2))[:4] if max_caudal != float('-inf') else "0"
             }
 
         return data_rows
 
-    except KeyError as e:
-        print(f"Error: Sheet '{sheet_name}' not found in workbook. Details: {e}")
-        return {}
-
     except Exception as e:
-        print(f"Error reading sheet '{sheet_name}': {e}")
-        import traceback
-        traceback.print_exc()
+        print(f"Error en ph_reader para {sheet_name}: {e}")
         return {}

@@ -1,6 +1,9 @@
 # Custom exceptions for project
 
 
+class NotJsonConfigFound(Exception):
+    pass
+
 class BasicDataSheetNotFound(Exception):
     pass
 

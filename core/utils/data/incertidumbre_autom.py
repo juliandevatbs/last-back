@@ -1,7 +1,5 @@
 def incertidumbre_auto(value):
 
-    print(f"VALOR QUE LLEGA {value}")
-
     try:
         # Convertir a float para no perder decimales
         val = float(value)

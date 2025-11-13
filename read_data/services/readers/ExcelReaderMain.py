@@ -1,70 +1,78 @@
+import json
 from read_data.services.readers.ph_reader import ph_reader
 from read_data.services.readers.read_chain_custody import read_chain_custody
 from read_data.services.readers.read_main_sheet import read_main_sheet
 
 
 class ExcelReaderMain:
-
-
-
     def __init__(self):
-
-
-        #SHEET NAMES
-        self.BASIC_SHEET_NAME = "DATOS BASICOS"
-        self.CHAIN_OF_CUSTODY_SHEET_NAME = "CADENA DE CUSTODIA"
-
-        self.AFLUENTE_SHEET_NAME = "AFLUENTE 1"
-        self.EFLUENTE_SHEET_NAME = "EFLUENTE 2"
-        self.PUNTO_DESCARGUE_SHEET_NAME = "CADENA DE VIGILANCIA PUNTUAL"
-
-
-        self.ph_columns_afluente = {
-
-            "initial_row": "B",
-            "hour_column": "C",
-            "ph_column": "D",
-            "caudal_column": "T",
-            "solidos_sedimentables_column": "L",
-        }
-
-
         self.workbook = None
-
-        #COLUMNS TO READ FROM CHAIN OF CUSTODY
-        self.chain_of_custody_columns = ("A", "C", "G", "H", "I", "G")
-
-
-
-        #Storage the readed data
+        self.config_data = None
         self.basic_data = None
         self.samples_data = None
-
+        self.specific_data = {}
 
     def load_work_book(self, workbook):
+        self.workbook = workbook
 
-        if workbook:
-
-            self.workbook = workbook
-
+    def load_json_data(self, inf_name: str):
+        try:
+            with open(f'fields_config/{inf_name}.json', 'r', encoding='utf-8') as config_inf:
+                self.config_data = json.load(config_inf)
+        except Exception as ex:
+            raise Exception(f"Error cargando JSON: {ex}")
 
     def caller(self):
-
-
         try:
+            basic_sheet = self.config_data['HOJAS_IMPORTANTES']['HOJA_BASICOS']
+            custody_sheet = self.config_data['HOJAS_IMPORTANTES']['CADENA_CUSTODIA']
 
-            self.basic_data = read_main_sheet(self.workbook, self.BASIC_SHEET_NAME)
+            self.basic_data = read_main_sheet(self.workbook, basic_sheet)
 
-            self.samples_data = read_chain_custody(self.workbook, self.CHAIN_OF_CUSTODY_SHEET_NAME, r"C:\Code\automatizacion_informes\BackEnd\templates\2 PM 20164 (2025-04-11)ACEITOSAS CPF CUPIAGUA_Muestreos Barranca.xlsx")
+            #DATOS QUE SE DEBEN PEDIR DE REQUEST(POR EL MOMENTO MANUALES)
+            self.basic_data["XX_REVISADO_POR_XX"] ="Claudia Calderón"
+            self.basic_data["XX_ROL_REVISADOR_XX"] = "Profesional de proyectos"
+            self.basic_data["XX_AUTORIZADO_POR_XX"] = "Claudia Calderón"
+            self.basic_data["XX_AUTORIZADO_POR_ROL_XX"] = "Directora de poyectos"
 
-            self.ph_data = ph_reader(self.workbook, self.AFLUENTE_SHEET_NAME, self.ph_columns_afluente, 75)
+            self.samples_data = read_chain_custody(
+                self.workbook,
+                custody_sheet,
+                self.config_data['RUTA_EXCEL_CADENA'],
+                self.config_data.get('CADENA_CUSTODIA_CONFIG', {}),
+                self.config_data['HOJAS_MUESTRAS']
+            )
 
-            self.ph_data_2 = ph_reader(self.workbook, self.EFLUENTE_SHEET_NAME, self.ph_columns_afluente, 75)
+            for index, sheet_info in self.config_data['HOJAS_MUESTRAS'].items():
+                sheet_name = sheet_info["NOMBRE"]
+                columns = sheet_info.get("COLUMNAS", {})
+                initial_row = sheet_info.get("FILA_INICIAL")
+
+                if columns and initial_row is not None:
+                    ph_data = ph_reader(self.workbook, sheet_name, columns, initial_row)
+                    #self.specific_data[sheet_name] = ph_data
+
+                    print(f"PH DATA {ph_data}")
 
 
 
-            return self.basic_data, self.samples_data, self.ph_data, self.ph_data_2
+                    for code, sample in self.samples_data.items():
+
+                        if code == 'OSI':
+                            continue
+
+                        sample_identification = sample.get("sample_identification", "").lower()
+                        sheet_name_lower = sheet_name.lower()
+
+                        if (sheet_name_lower in sample_identification or
+                            any(word in sample_identification for word in sheet_name_lower.split())
+                        ):
+
+
+                            sample["mediciones"] = ph_data
+                            #break
+
+            return self.basic_data, self.samples_data, self.specific_data
 
         except Exception as ex:
-
-            print("Error reading the sheets")
+            raise Exception(f"Error leyendo hojas: {ex}")

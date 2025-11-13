@@ -3,90 +3,82 @@ from read_data.services.readers.read_punctual_sheet_data import read_punctual_sh
 from read_data.services.readers.read_specific_sheet import read_specific_sheet, read_specific_sheet_data
 
 
-def read_chain_custody(workbook, sheet_name: str, file_path: str) -> dict:
+def read_chain_custody(workbook, sheet_name: str, file_path: str, config: dict, hojas_muestras: dict) -> dict:
     try:
-
-
-        print(f"ABRIENDO HOJA -> {sheet_name}")
-
         chain_custody_sheet = workbook[sheet_name]
         samples_data = {}
 
-        sample_description_afluente = read_specific_sheet(file_path, "AFLUENTE 1")
-        sample_description_efluente = read_specific_sheet(file_path, "EFLUENTE 2")
-        sample_description_3 = read_specific_sheet(file_path, "CADENA DE VIGILANCIA PUNTUAL")
+        descriptions = []
+        environmental_data = []
 
-        # Leer datos ambientales de cada hoja
-        clima_afluente, temp_afluente, humedad_afluente, altitud_afluente = read_specific_sheet_data(workbook,
-                                                                                                     "AFLUENTE 1")
-        clima_efluente, temp_efluente, humedad_efluente, altitud_efluente = read_specific_sheet_data(workbook,
-                                                                                                     "EFLUENTE 2")
+        for index, hoja_info in hojas_muestras.items():
+            nombre_hoja = hoja_info["NOMBRE"]
+            params = hoja_info.get("PARAMETROS_AMBIENTALES", {})
 
+            if not params:
+                continue
 
-        clima_descarga, temp_descarga, humedad_descarga, altitud_descarga = read_specific_sheet_data(workbook,
-                                                                                                     "CADENA DE VIGILANCIA PUNTUAL", day_type_start_row=18, nublado_col='F', soleado_col='I', lluvioso_col='L', temp_col = "O", hum_col="S", alt_col="W")
+            desc = read_specific_sheet(file_path, nombre_hoja)
+            descriptions.append(desc)
 
-        descriptions = [sample_description_afluente, sample_description_efluente, sample_description_3]
+            clima, temp, humedad, altitud = read_specific_sheet_data(
+                workbook,
+                nombre_hoja,
+                day_type_start_row=params["FILA_INICIO_CLIMA"],
+                nublado_col=params["COL_NUBLADO"],
+                soleado_col=params["COL_SOLEADO"],
+                lluvioso_col=params["COL_LLUVIOSO"],
+                temp_col=params["COL_TEMPERATURA"],
+                hum_col=params["COL_HUMEDAD"],
+                alt_col=params["COL_ALTITUD"]
+            )
 
-        # ✅ Lista de datos ambientales correspondientes a cada muestra
-        environmental_data = [
-            {
-                "clima": clima_afluente,
-                "temperatura_ambiente": temp_afluente,
-                "humedad_relativa": humedad_afluente,
-                "altitud": altitud_afluente
-            },
-            {
-                "clima": clima_efluente,
-                "temperatura_ambiente": temp_efluente,
-                "humedad_relativa": humedad_efluente,
-                "altitud": altitud_efluente
-            },
-            {
-                "clima": clima_descarga,
-                "temperatura_ambiente": temp_descarga,
-                "humedad_relativa": humedad_descarga,
-                "altitud": altitud_descarga
-            }
-        ]
+            environmental_data.append({
+                "clima": clima,
+                "temperatura_ambiente": temp,
+                "humedad_relativa": humedad,
+                "altitud": altitud
+            })
 
-        hours = read_punctual_sheet_data(workbook, "CADENA DE VIGILANCIA PUNTUAL")
+        hours = read_punctual_sheet_data(workbook, config["HOJA_HORAS"])
 
-        for idx, row in enumerate(range(23, 28, 2)):
-            if chain_custody_sheet[f"A{row}"].value != '' and chain_custody_sheet[f"A{row}"].value != None:
+        cols = config["COLUMNAS"]
+        fila_inicial = config["FILA_INICIAL"]
+        fila_final = config["FILA_FINAL"]
+        incremento = config["INCREMENTO_FILA"]
 
+        for idx, row in enumerate(range(fila_inicial, fila_final, incremento)):
+            codigo_col = cols["CODIGO_CHEMILAB"]
+
+            if chain_custody_sheet[f"{codigo_col}{row}"].value not in [None, '']:
                 sample = {}
-                sample["chemilab_code"] = chain_custody_sheet[f"A{row}"].value
-                sample["sample_identification"] = chain_custody_sheet[f"C{row}"].value
-                sample["sample_year"] = chain_custody_sheet[f"G{row}"].value
-                sample["sample_month"] = chain_custody_sheet[f"H{row}"].value
-                sample["sample_day"] = chain_custody_sheet[f"I{row}"].value
+                sample["chemilab_code"] = chain_custody_sheet[f"{codigo_col}{row}"].value
+                sample["sample_identification"] = chain_custody_sheet[f"{cols['IDENTIFICACION_MUESTRA']}{row}"].value
+                sample["sample_year"] = chain_custody_sheet[f"{cols['AÑO']}{row}"].value
+                sample["sample_month"] = chain_custody_sheet[f"{cols['MES']}{row}"].value
+                sample["sample_day"] = chain_custody_sheet[f"{cols['DIA']}{row}"].value
                 sample["sample_description"] = descriptions[idx] if idx < len(descriptions) else None
 
-
-
                 hour_obj = hours.get(str(idx + 1), None)
-                print(hour_obj)
                 sample["sampler_hour"] = hour_to_str(hour_obj)
 
-                # ✅ AGREGAR DATOS AMBIENTALES A CADA MUESTRA
                 if idx < len(environmental_data):
                     sample["sample_weather"] = environmental_data[idx]["clima"]
                     sample["sample_temperature"] = environmental_data[idx]["temperatura_ambiente"]
                     sample["sample_humidity"] = environmental_data[idx]["humedad_relativa"]
                     sample["sample_altitude"] = environmental_data[idx]["altitud"]
 
-                samples_data[chain_custody_sheet[f"A{row}"].value] = sample
+                samples_data[sample["chemilab_code"]] = sample
 
-        samples_data["OSI"] = chain_custody_sheet["H49"].value
+        samples_data["OSI"] = chain_custody_sheet[config["CELDA_OSI"]].value
 
-        print(samples_data)
         return samples_data
 
-    except KeyError:
-        print(f"Sheet {sheet_name} not found please review")
+    except KeyError as e:
+        print(f"Sheet {sheet_name} not found: {e}")
         return {}
-
     except Exception as e:
         print(f"Error opening the sheet: {e}")
+        import traceback
+        traceback.print_exc()
         return {}

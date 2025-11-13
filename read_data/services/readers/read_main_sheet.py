@@ -3,6 +3,7 @@ def read_main_sheet(workbook, sheet_name: str) -> dict:
     # read basic data sheet
 
     try:
+
         main_sheet = workbook[sheet_name]
 
         # Storage the sheet data
@@ -33,8 +34,6 @@ def read_main_sheet(workbook, sheet_name: str) -> dict:
         sampling_basic_data["XX_FECHA_MUESTREO_XX"] = main_sheet["E5"].value
 
         basic_data["sampling_basic_data"] = sampling_basic_data
-
-        print(basic_data)
 
         return basic_data
 

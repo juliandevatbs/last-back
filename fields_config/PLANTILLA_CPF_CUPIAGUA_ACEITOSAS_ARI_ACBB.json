@@ -1,0 +1,329 @@
+{
+    "RUTA_EXCEL_CADENA": "\\\\192.168.1.80\\Proyectos\\PROYECTOS 2025\\ECOPETROL\\VPI\\ODS 021\\04 ABRIL\\CUPIAGUA\\INF_12716_PM_20164_CPF CUPIAGUA_ACEITOSAS_ARI\\Informaci\u00f3n\\2 PM 20164 (2025-04-11)ACEITOSAS CPF CUPIAGUA_Muestreos Barranca.xlsx",
+    "HOJAS_IMPORTANTES": {
+        "HOJA_BASICOS": "DATOS BASICOS",
+        "CADENA_CUSTODIA": "CADENA DE CUSTODIA",
+        "CADENA_VIGILANCIA": "CA DENA DE VIGILANCIA PUNTUAL"
+    },
+    "CADENA_CUSTODIA_CONFIG": {
+        "FILA_INICIAL": 23,
+        "FILA_FINAL": 28,
+        "INCREMENTO_FILA": 2,
+        "COLUMNAS": {
+            "CODIGO_CHEMILAB": "A",
+            "IDENTIFICACION_MUESTRA": "C",
+            "A\u00d1O": "G",
+            "MES": "H",
+            "DIA": "I"
+        },
+        "CELDA_OSI": "H49",
+        "HOJA_HORAS": "CADENA DE VIGILANCIA PUNTUAL"
+    },
+    "CANTIDAD_PUNTOS": 2,
+    "HOJAS_MUESTRAS": {
+        "1": {
+            "NOMBRE": "AFLUENTE 1",
+            "FILA_INICIAL": 75,
+            "COLUMNAS": {
+                "COLUMNA_INDICE": "B",
+                "HORA": "C",
+                "PH": "D",
+                "TC": "E",
+                "SOLIDOS_SEDIMENTABLES": "L",
+                "VOLUMEN": "R",
+                "TIEMPO": "S",
+                "CAUDAL": "T",
+                "VOLUMEN_ALICUOTA": "U"
+            },
+            "PARAMETROS_AMBIENTALES": {
+                "FILA_INICIO_CLIMA": 11,
+                "COL_NUBLADO": "D",
+                "COL_SOLEADO": "G",
+                "COL_LLUVIOSO": "J",
+                "COL_TEMPERATURA": "M",
+                "COL_HUMEDAD": "Q",
+                "COL_ALTITUD": "U"
+            }
+        },
+        "2": {
+            "NOMBRE": "EFLUENTE 2",
+            "FILA_INICIAL": 75,
+            "COLUMNAS": {
+                "COLUMNA_INDICE": "B",
+                "HORA": "C",
+                "PH": "D",
+                "TC": "E",
+                "SOLIDOS_SEDIMENTABLES": "L",
+                "VOLUMEN": "R",
+                "TIEMPO": "S",
+                "CAUDAL": "T",
+                "VOLUMEN_ALICUOTA": "U"
+            },
+            "PARAMETROS_AMBIENTALES": {
+                "FILA_INICIO_CLIMA": 11,
+                "COL_NUBLADO": "D",
+                "COL_SOLEADO": "G",
+                "COL_LLUVIOSO": "J",
+                "COL_TEMPERATURA": "M",
+                "COL_HUMEDAD": "Q",
+                "COL_ALTITUD": "U"
+            }
+        },
+        "3": {
+            "NOMBRE": "CADENA DE VIGILANCIA PUNTUAL",
+            "FILA_INICIAL": null,
+            "COLUMNAS": {},
+            "PARAMETROS_AMBIENTALES": {
+                "FILA_INICIO_CLIMA": 18,
+                "COL_NUBLADO": "F",
+                "COL_SOLEADO": "I",
+                "COL_LLUVIOSO": "L",
+                "COL_TEMPERATURA": "O",
+                "COL_HUMEDAD": "S",
+                "COL_ALTITUD": "W"
+            }
+        }
+    },
+    "ENCABEZADO_CONFIG": {
+        "VARIABLES": {
+            "XX_FECHA_ELABORACION_XX": ""
+        }
+    },
+    "PORTADA_CONFIG": {
+        "VARIABLES": {
+            "XX_REVISADO_POR_XX": "Claudia Calder\u00f3n",
+            "XX_ROL_REVISADOR_XX": "Profesional de proyectos",
+            "XX_AUTORIZADO_POR_XX": "Claudia Calder\u00f3n",
+            "XX_AUTORIZADO_POR_ROL_XX": "Directora de poyectos",
+            "XX_INFORME_NUMERO_XX": "",
+            "XX_FECHA_MONITOREO_XX": ""
+        }
+    },
+    "HOJAS_GENERALES_CONFIG": {
+        "VARIABLES": {
+            "XX_MES_LITERAL_XX": "",
+            "XX_FECHA_MONITOREO_LITERAL_XX": ""
+        }
+    },
+    "TABLAS_WORD_CONFIG": {
+        "TABLA_MONITOREO": {
+            "TITULO_BUSQUEDA": "Puntos de monitoreo",
+            "PALABRAS_CLAVE_ENCABEZADO": [
+                "C\u00d3DIGO",
+                "FECHA",
+                "HORA",
+                "IDENTIFICACION",
+                "COORDENADAS",
+                "FOTOGRAF\u00cdA"
+            ],
+            "MIN_PALABRAS_CLAVE": 3,
+            "FILA_PRIMER_DATO": 3,
+            "FILAS_POR_MUESTRA": 2,
+            "COLUMNAS": {
+                "CODIGO_MUESTRA": 0,
+                "FECHA": 1,
+                "HORA": 2,
+                "NOMBRE": 3,
+                "ESTE": 4,
+                "NORTE": 5,
+                "FOTOGRAFIA": 6,
+                "DESCRIPCION": 0
+            },
+            "CARPETA_IMAGENES": {
+                "0": "AFLUENTE",
+                "1": "EFLUENTE",
+                "2": "PUNTO DE DESCARGA"
+            }
+        }
+    },
+    "DATOS_MUESTRAS": {
+        "MI513129": {
+            "chemilab_code": "MI513129",
+            "sample_identification": "AFLUENTE SISTEMA AGUAS LLUVIAS OCASIONALMENTE ACEITOSAS DE CPF CUPIAGUA",
+            "sample_year": 25,
+            "sample_month": 4,
+            "sample_day": 11,
+            "sample_description": "APPunto de monitoreo ubicado a 50 m del \u00e1rea contraincendios y a 120 m de la porter\u00eda interna del CPF Cupiagua. Presenta una vegetaci\u00f3n circundante escasa, compuesta por herb\u00e1ceas y arbustos de mediano dosel. El sistema se observa dentro de una estructura en concreto, se\u00f1alizado por barandas met\u00e1licas. La muestra se apreci\u00f3 de una tonalidad amarillo claro, con olor caracter\u00edstico del sistema y se percibi\u00f3 iridiscencia.",
+            "sampler_hour": "13:06",
+            "sample_weather": "No especificado",
+            "sample_temperature": "None\u00b0C",
+            "sample_humidity": "None%",
+            "sample_altitude": "397 m.s.n.m",
+            "mediciones": {
+                "0": {
+                    "hour": "08:00",
+                    "ph": 4.85,
+                    "caudal": "3.46",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0485"
+                },
+                "1": {
+                    "hour": "08:30",
+                    "ph": 4.99,
+                    "caudal": "3.84",
+                    "solidos_sedimentables": "-",
+                    "incertidumbre": "\u00b10.0499"
+                },
+                "2": {
+                    "hour": "09:00",
+                    "ph": 6.31,
+                    "caudal": "4.34",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0631"
+                },
+                "3": {
+                    "hour": "09:30",
+                    "ph": 6.23,
+                    "caudal": "3.84",
+                    "solidos_sedimentables": "-",
+                    "incertidumbre": "\u00b10.0623"
+                },
+                "4": {
+                    "hour": "10:00",
+                    "ph": 6.45,
+                    "caudal": "4.11",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0645"
+                },
+                "5": {
+                    "hour": "10:30",
+                    "ph": 6.32,
+                    "caudal": "4",
+                    "solidos_sedimentables": "-",
+                    "incertidumbre": "\u00b10.0632"
+                },
+                "6": {
+                    "hour": "11:00",
+                    "ph": 5.98,
+                    "caudal": "3.84",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0598"
+                },
+                "7": {
+                    "hour": "11:30",
+                    "ph": 5.88,
+                    "caudal": "4.44",
+                    "solidos_sedimentables": "-",
+                    "incertidumbre": "\u00b10.0588"
+                },
+                "8": {
+                    "hour": "12:00",
+                    "ph": 5.79,
+                    "caudal": "4.32",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0579"
+                },
+                "_metadata": {
+                    "media_valores": 5.867,
+                    "media_incertidumbre": "\u00b10.0587",
+                    "media_caudal": 4.026,
+                    "valor_minimo_reportado": 4.85,
+                    "valor_maximo_reportado": 6.45,
+                    "min_valor_reportado_caudales": "3.46",
+                    "max_valor_reportado_caudales": "4.44"
+                }
+            }
+        },
+        "MI513130": {
+            "chemilab_code": "MI513130",
+            "sample_identification": "EFLUENTE SISTEMA AGUAS LLUVIAS OCASIONALMENTE ACEITOSAS DE CPF CUPIAGUA",
+            "sample_year": 25,
+            "sample_month": 4,
+            "sample_day": 11,
+            "sample_description": "APPunto de monitoreo ubicado a 50 m de la porter\u00eda interna del CPF Cupiagua. Presenta una vegetaci\u00f3n circundante escasa, compuesta por ejemplares de mediano y gran dosel. El sistema se encuentra dentro de una estructura en concreto a cielo abierto, se\u00f1alizado con barandas met\u00e1licas. La muestra se apreci\u00f3 de una tonalidad amarillo claro, con olor caracter\u00edstico del sistema y no se percibi\u00f3 iridiscencia.",
+            "sampler_hour": "13:08",
+            "sample_weather": "No especificado",
+            "sample_temperature": "None\u00b0C",
+            "sample_humidity": "None%",
+            "sample_altitude": "395 m.s.n.m",
+            "mediciones": {
+                "1": {
+                    "hour": "08:15",
+                    "ph": 7.21,
+                    "caudal": "3.93",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0721"
+                },
+                "2": {
+                    "hour": "08:45",
+                    "ph": 7.31,
+                    "caudal": "3.70",
+                    "solidos_sedimentables": "-",
+                    "incertidumbre": "\u00b10.0731"
+                },
+                "3": {
+                    "hour": "09:15",
+                    "ph": 7.42,
+                    "caudal": "4",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0742"
+                },
+                "4": {
+                    "hour": "09:45",
+                    "ph": 7.13,
+                    "caudal": "3.57",
+                    "solidos_sedimentables": "-",
+                    "incertidumbre": "\u00b10.0713"
+                },
+                "5": {
+                    "hour": "10:15",
+                    "ph": 7.28,
+                    "caudal": "3.96",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0728"
+                },
+                "6": {
+                    "hour": "10:45",
+                    "ph": 7.31,
+                    "caudal": "4.04",
+                    "solidos_sedimentables": "-",
+                    "incertidumbre": "\u00b10.0731"
+                },
+                "7": {
+                    "hour": "11:15",
+                    "ph": 7.26,
+                    "caudal": "3.12",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0726"
+                },
+                "8": {
+                    "hour": "11:45",
+                    "ph": 7.45,
+                    "caudal": "3.17",
+                    "solidos_sedimentables": "-",
+                    "incertidumbre": "\u00b10.0745"
+                },
+                "9": {
+                    "hour": "12:15",
+                    "ph": 7.14,
+                    "caudal": "2.93",
+                    "solidos_sedimentables": "<0,1",
+                    "incertidumbre": "\u00b10.0714"
+                },
+                "_metadata": {
+                    "media_valores": 7.279,
+                    "media_incertidumbre": "\u00b10.0728",
+                    "media_caudal": 3.607,
+                    "valor_minimo_reportado": 7.13,
+                    "valor_maximo_reportado": 7.45,
+                    "min_valor_reportado_caudales": "2.93",
+                    "max_valor_reportado_caudales": "4.05"
+                }
+            }
+        },
+        "MI513131": {
+            "chemilab_code": "MI513131",
+            "sample_identification": "PUNTO DE DESCARGA AL R\u00cdO UNETE DE LAS AGUAS LLUVIAS OCASIONALMENTE ACEITOSAS DE CPF CUPIAGUA",
+            "sample_year": 25,
+            "sample_month": 4,
+            "sample_day": 11,
+            "sample_description": "Punto de monitoreo ubicado al costado derecho de la v\u00eda que conduce a la bocatoma del CPF Cupiagua y 100 m antes de la confluencia con el R\u00edo Unete. Se evidencia topograf\u00eda irregular, compuesta por vegetaci\u00f3n arb\u00f3rea y arbustiva. Se observa punto de salida por tuber\u00eda met\u00e1lica con presencia de corrosi\u00f3n. La muestra se apreci\u00f3 de una tonalidad amarillo claro, sin olor, ni iridiscencia.",
+            "sampler_hour": "13:06",
+            "sample_weather": "Dia Soleado",
+            "sample_temperature": "31,7\u00b0C\u00b0C",
+            "sample_humidity": "0.57%",
+            "sample_altitude": "None m.s.n.m"
+        },
+        "OSI": 133557
+    }
+}
