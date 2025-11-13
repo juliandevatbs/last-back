@@ -4,10 +4,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import threading
-from core.Flows import main_flow
+from core.threads import main_flow
 import json
 
-from core.Flows.main_flow import MainFlow
+from core.threads.main_flow import MainFlow
 
 
 class ReadFile(APIView):

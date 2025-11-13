@@ -9,8 +9,6 @@ logger = logging.getLogger(__name__)
 
 class ReadGraphicsData:
 
-
-
     def __init__(self):
 
         self.chain_custody_obj = None
@@ -134,6 +132,14 @@ class ReadGraphicsData:
             print(f"{key}: {value}")"""
 
         return self.ph_solidos_caudales_tbl
+
+
+    # Not in situ data, comes from sampler database
+    def read_normal_results_data(self):
+
+        
+
+        return
 
 
 
