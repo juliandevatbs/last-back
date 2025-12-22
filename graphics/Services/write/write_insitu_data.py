@@ -48,6 +48,8 @@ class WriteInsituData:
         #print("ARCHIVO DE GRAFICAS ABIERTO CORRECTAMENTE")
         logger.info("Graphics excel open succesfully")
 
+        return self.graphics_excel
+
     def write_insitu_data(self):
 
         # Load the insitu sheet
@@ -77,22 +79,17 @@ class WriteInsituData:
                 incertidumbre_solidos = register.get("SOLIDOS SEDIMENTABLES")
                 caudal = register.get("CAUDALES")
 
-                print("INCERTIDUMBRE PH")
-                print(incertidumbre_ph)
-
-                print(self.insitu_data["AFLUENTE"])
-
-
                 # Write data
-                insitu_sheet[f"{afluente_table_columns.get('HORA')}{init_row_afluente}"] = hour
-                insitu_sheet[f"{afluente_table_columns.get('VALOR_REPORTADO_PH')}{init_row_afluente}"] = ph
-                insitu_sheet[f"{afluente_table_columns.get('INCERTIDUMBRE_CALCULADA_PH')}{init_row_afluente}"] = incertidumbre_ph
+                insitu_sheet[f"{afluente_table_columns.get('HORA')}{init_row_afluente}"].value = hour
+                insitu_sheet[f"{afluente_table_columns.get('VALOR_REPORTADO_PH')}{init_row_afluente}"].value = ph
+                #insitu_sheet[f"{afluente_table_columns.get('INCERTIDUMBRE_CALCULADA_PH')}{init_row_afluente}"].value = incertidumbre_ph
 
                 if odd_to_write % 2 == 0:
-                    insitu_sheet[f"{afluente_table_columns.get('VALOR_REPORTADO_SOLIDOS')}{init_row_afluente}"] = solidos
-                    insitu_sheet[f"{afluente_table_columns.get('INCERTIDUMBRE_CALCULADA_SOLIDOS')}{init_row_afluente}"] = incertidumbre_solidos
 
-                insitu_sheet[f"{afluente_table_columns.get('CAUDAL')}{init_row_afluente}"] = caudal
+                    insitu_sheet[f"{afluente_table_columns.get('VALOR_REPORTADO_SOLIDOS')}{init_row_afluente}"].value = solidos
+                    #insitu_sheet[f"{afluente_table_columns.get('INCERTIDUMBRE_CALCULADA_SOLIDOS')}{init_row_afluente}"].value = incertidumbre_solidos
+
+                insitu_sheet[f"{afluente_table_columns.get('CAUDAL')}{init_row_afluente}"].value = caudal
 
                 init_row_afluente += 1
                 odd_to_write+=1
@@ -112,17 +109,16 @@ class WriteInsituData:
                 caudal = register.get("CAUDALES")
 
                 # Write data
-                insitu_sheet[f"{efluente_table_columns.get('HORA')}{init_row_efluente}"] = hour
-                insitu_sheet[f"{efluente_table_columns.get('VALOR_REPORTADO_PH')}{init_row_efluente}"] = ph
-                insitu_sheet[f"{efluente_table_columns.get('INCERTIDUMBRE_CALCULADA_PH')}{init_row_efluente}"] = incertidumbre_ph
-                insitu_sheet[f"{efluente_table_columns.get('VALOR_REPORTADO_SOLIDOS')}{init_row_efluente}"] = solidos
-                insitu_sheet[f"{efluente_table_columns.get('INCERTIDUMBRE_CALCULADA_SOLIDOS')}{init_row_efluente}"] = incertidumbre_solidos
-                insitu_sheet[f"{efluente_table_columns.get('CAUDAL')}{init_row_efluente}"] = caudal
+                insitu_sheet[f"{efluente_table_columns.get('HORA')}{init_row_efluente}"].value = hour
+                insitu_sheet[f"{efluente_table_columns.get('VALOR_REPORTADO_PH')}{init_row_efluente}"].value = ph
+                #insitu_sheet[f"{efluente_table_columns.get('INCERTIDUMBRE_CALCULADA_PH')}{init_row_efluente}"].value = incertidumbre_ph
+                insitu_sheet[f"{efluente_table_columns.get('VALOR_REPORTADO_SOLIDOS')}{init_row_efluente}"].value = solidos
+                #insitu_sheet[f"{efluente_table_columns.get('INCERTIDUMBRE_CALCULADA_SOLIDOS')}{init_row_efluente}"].value = incertidumbre_solidos
+                insitu_sheet[f"{efluente_table_columns.get('CAUDAL')}{init_row_efluente}"].value = caudal
 
                 init_row_efluente += 1
 
 
-            self.graphics_excel.save(self.json_configs["RUTA_EXCEL_GRAFICAS"])
             logger.info(f"Excel saved succesfully")
 
         except Exception as ex:
@@ -130,12 +126,6 @@ class WriteInsituData:
             logger.error(f"Error writting insitu data {ex}")
 
 
-
-
-
-
-        # Search tables coords
-        #afluente_init_coords = f"{self.insitu_data()}{}"
 
 
 

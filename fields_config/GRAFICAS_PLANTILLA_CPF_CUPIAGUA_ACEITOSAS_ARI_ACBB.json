@@ -1,14 +1,55 @@
 {
-
   "RUTA_EXCEL_GRAFICAS": "C:\\Code\\automatizacion_informes\\BackEnd\\templates\\INF_14359_PM_20634_CPF_CUPIAGUA_AGUAS_ACEITOSAS_ARI_GRÁFICAS.xlsx",
 
+  "HOJAS_GRAFICAS": {
+
+    "1": "IN SITU",
+    "2": "GRÁFICAS"
+  },
+
+  "PARAMETROS": {
+    "HOJA": "RESULTADOS",
+    "COORD_PARAMETROS": "B3",
+    "CANT_PARAMETROS": 64,
+    "CANTIDAD_MUESTRAS": 3,
+
+    "COD_MUESTRAS": {
+      "AFLUENTE": {
+        "HOJA_COD_MUESTRA": "CADENA DE CUSTODIA",
+        "COD_MUESTRA_UBI": "A23",
+        "FECHA_COORD": "G3",
+        "INCERTIDUMBRE_COORD": "H3",
+        "SKIP_FILA": [16, 32],
+         "SKIP_FINAL": [13, 29],
+        "RESULTADO_FINAL_COORD": "H3",
+        "FINAL_COORD": "E2"
+      },
+      "EFLUENTE": {
+        "HOJA_COD_MUESTRA": "CADENA DE CUSTODIA",
+        "COD_MUESTRA_UBI": "A25",
+        "FECHA_COORD": "K3",
+        "INCERTIDUMBRE_COORD": "L3",
+        "SKIP_FILA": [16, 32],
+        "SKIP_FINAL": [13, 29],
+        "RESULTADO_FINAL_COORD": "L3",
+        "FINAL_COORD": "F2"
+      },
+      "PUNTO_DESCARGA": {
+        "HOJA_COD_MUESTRA": "CADENA DE CUSTODIA",
+        "COD_MUESTRA_UBI": "A27",
+        "FECHA_COORD": "O3",
+        "INCERTIDUMBRE_COORD": "P3",
+        "SKIP_FILA": [16, 32],
+         "SKIP_FINAL": [13, 29],
+        "RESULTADO_FINAL_COORD": "P3",
+        "FINAL_COORD": "G2"
+      }
+    }
+  },
 
   "INSITU": {
-
-
     "HOJA_INSITU": "IN SITU",
     "TABLAS_INSITU": {
-
       "AFLUENTE_TABLA": {
         "FILA_INICIAL": 9,
         "COLUMNAS": {
@@ -20,25 +61,21 @@
           "CAUDAL": "F"
         }
       },
-
-
       "EFLUENTE_TABLA": {
-          "FILA_INICIAL": 9,
-          "COLUMNAS": {
-            "HORA": "H",
-            "VALOR_REPORTADO_PH": "I",
-            "INCERTIDUMBRE_CALCULADA_PH": "J",
-            "VALOR_REPORTADO_SOLIDOS": "K",
-            "INCERTIDUMBRE_CALCULADA_SOLIDOS": "L",
-            "CAUDAL": "M"
-          }
-
+        "FILA_INICIAL": 9,
+        "COLUMNAS": {
+          "HORA": "H",
+          "VALOR_REPORTADO_PH": "I",
+          "INCERTIDUMBRE_CALCULADA_PH": "J",
+          "VALOR_REPORTADO_SOLIDOS": "K",
+          "INCERTIDUMBRE_CALCULADA_SOLIDOS": "L",
+          "CAUDAL": "M"
         }
-      },
+      }
+    },
 
-      "INFO_TABLAS_LECTURA": {
-
-        "AFLUENTE": {
+    "INFO_TABLAS_LECTURA": {
+      "AFLUENTE": {
         "HOJA_COD_MUESTRA": "CADENA DE CUSTODIA",
         "HOJA_EXCEL": "AFLUENTE 1",
         "NOMBRE_TABLA": "AFLUENTE SISTEMA AGUAS LLUVIAS OCASIONALMENTE ACEITOSAS DE CPF CUPIAGUA",
@@ -70,8 +107,6 @@
           "CAUDALES": "T"
         }
       }
-
-      }
-
     }
   }
+}

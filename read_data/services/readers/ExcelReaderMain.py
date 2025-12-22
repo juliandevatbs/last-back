@@ -16,6 +16,7 @@ class ExcelReaderMain:
         self.workbook = workbook
 
     def load_json_data(self, inf_name: str):
+
         try:
             with open(f'fields_config/{inf_name}.json', 'r', encoding='utf-8') as config_inf:
                 self.config_data = json.load(config_inf)
@@ -29,7 +30,6 @@ class ExcelReaderMain:
 
             self.basic_data = read_main_sheet(self.workbook, basic_sheet)
 
-            #DATOS QUE SE DEBEN PEDIR DE REQUEST(POR EL MOMENTO MANUALES)
             self.basic_data["XX_REVISADO_POR_XX"] ="Claudia Calderón"
             self.basic_data["XX_ROL_REVISADOR_XX"] = "Profesional de proyectos"
             self.basic_data["XX_AUTORIZADO_POR_XX"] = "Claudia Calderón"
@@ -51,10 +51,7 @@ class ExcelReaderMain:
                 if columns and initial_row is not None:
                     ph_data = ph_reader(self.workbook, sheet_name, columns, initial_row)
                     #self.specific_data[sheet_name] = ph_data
-
                     print(f"PH DATA {ph_data}")
-
-
 
                     for code, sample in self.samples_data.items():
 

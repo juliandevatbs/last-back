@@ -4,6 +4,9 @@ import os
 
 from core.tasks import Tasks
 from graphics.Services.graphic_generator import GraphicGenerator
+from read_data.services.readers.ExcelReaderMain import ExcelReaderMain
+from write_data.services.docx_writer.DocxWriterMain import DocxWriterMain
+from write_data.services.writer import Writer
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +18,10 @@ class MainFlow:
         # Instances
         self.general_tasks = Tasks()
         self.graphics_core = GraphicGenerator()
+        self.excel_reader = ExcelReaderMain()
+
+        self.docx_generator = DocxWriterMain()
+        self.test_writter = Writer("fields_config/PLANTILLA_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB.json", "templates/PLANTILLA INF_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB.docx")
 
         # Template config
         self.template_config = None
@@ -55,6 +62,19 @@ class MainFlow:
 
                 logger.error("Error cleaning the json")
 
+    def generate_docx(self):
+
+
+        # First read the excel data
+        self.excel_reader.load_json_data("PLANTILLA_CPF_CUPIAGUA_ACEITOSAS_ARI_ACBB")
+        basic_data, samples_data, specific_data = self.excel_reader.caller()
+
+        self.test_writter.load_json_config()
+        self.test_writter.load_word_template()
+        self.test_writter.write_data(basic_data, samples_data, specific_data)
+        self.test_writter.save_document("templates/test.docx")
+
+
     def main_flow_caller(self, chain_of_custody, template_name: str):
 
         # Orchestrates the complete flow
@@ -63,6 +83,10 @@ class MainFlow:
             self.template_config = self.load_json_config(template_name)
 
             self.clean_json_config(template_name)
+
+            #Docx
+
+            #self.generate_docx()
 
             #Graphics
             self.graphics_core.main(template_name, chain_of_custody)
