@@ -2,6 +2,7 @@ import logging
 import win32com.client as win32
 from pathlib import Path
 import time
+import pythoncom
 
 from core.exceptions import KeyNotFound
 
@@ -17,12 +18,9 @@ class CopyGraphics:
         self.word_obj = word_to_write
         self.word_path = word_path
 
-    def copy_and_insert_editable_charts(self):
-        """if not self.excel_graph:
-            logger.error("No se suministro excel de graficas", exc_info=True)
-            raise ValueError("Excel object is None")
-        """
 
+    def copy_and_insert_editable_charts(self):
+        
         if self.excel_graph is None:
             logger.error("No se suministro excel de graficas", exc_info=True)
             raise ValueError("Excel object is None")
@@ -35,16 +33,21 @@ class CopyGraphics:
             logger.error("No se suministro objeto Word", exc_info=True)
             raise ValueError("Word object is None")
 
+        word_app = None
+        original_screen_updating = None
+        
         try:
-            # NO cerramos el Word, trabajamos directamente con el que ya está abierto
+            word_app = self.word_obj.Application
+            original_screen_updating = word_app.ScreenUpdating
+            
+            word_app.ScreenUpdating = False
+            
             logger.info("Construyendo registro de gráficas...")
             chart_registry = self._build_chart_registry(self.excel_graph)
 
-            # Insertar gráficas en el Word actual
             logger.info("Insertando gráficas en Word...")
             self._insert_charts_in_word(self.word_obj, chart_registry)
 
-            # Guardar el documento
             logger.info("Guardando documento Word...")
             self.word_obj.Save()
 
@@ -57,23 +60,32 @@ class CopyGraphics:
         except Exception as ex:
             logger.error(f"Error copiando graficas del excel: {ex}", exc_info=True)
             raise
+            
+        finally:
+            if word_app and original_screen_updating is not None:
+                try:
+                    word_app.ScreenUpdating = original_screen_updating
+                except:
+                    pass
+
 
     def _build_chart_registry(self, excel_workbook):
+        
         chart_registry = {}
         sheets = self.json_config["HOJAS_GRAFICAS"].values()
 
         for sheet_name in sheets:
             try:
-                # Acceso correcto con win32com
                 sheet = excel_workbook.Sheets(sheet_name)
+                
             except Exception as e:
                 logger.error(f"Hoja {sheet_name} no encontrada: {e}")
                 continue
 
-            # Contar gráficos en la hoja usando ChartObjects (win32com)
             try:
                 chart_objects = sheet.ChartObjects()
                 chart_count = chart_objects.Count
+                
             except Exception as e:
                 logger.error(f"Error accediendo a ChartObjects en {sheet_name}: {e}")
                 continue
@@ -85,18 +97,20 @@ class CopyGraphics:
             if sheet_name not in chart_registry:
                 chart_registry[sheet_name] = {}
 
-            # Registrar cada gráfico (índice base 1 en win32com)
             for i in range(1, chart_count + 1):
                 try:
                     chart_obj = chart_objects(i)
                     chart_registry[sheet_name][i] = chart_obj
                     logger.info(f"Registrada grafica {i} de hoja {sheet_name}")
+                    
                 except Exception as chart_error:
                     logger.error(f"Error obteniendo grafica {i} de hoja {sheet_name}: {chart_error}")
 
         return chart_registry
 
+
     def _insert_charts_in_word(self, word_doc, chart_registry):
+        
         graphic_mappings = self._get_graphic_mappings()
 
         for sheet_name, charts in graphic_mappings.items():
@@ -113,13 +127,19 @@ class CopyGraphics:
                     logger.info(f"Procesando grafica {chart_index} de {sheet_name}")
 
                     chart_obj = chart_registry[sheet_name][chart_index]
-
-                    search_text = config["text"]  # text en minúscula
+                    search_text = config["text"]
                     target_occurrence = config["occurrence"]
 
-                    if self._insert_chart_at_location(word_doc, chart_obj, search_text, target_occurrence, chart_index,
-                                                      sheet_name):
+                    if self._insert_chart_at_location(
+                        word_doc, 
+                        chart_obj, 
+                        search_text, 
+                        target_occurrence, 
+                        chart_index,
+                        sheet_name
+                    ):
                         logger.info(f"Grafica {chart_index} de {sheet_name} insertada correctamente")
+                        
                     else:
                         logger.warning(f"No se encontro ubicación para grafica {chart_index} de {sheet_name}")
 
@@ -127,8 +147,11 @@ class CopyGraphics:
                     logger.error(f"Error insertando grafica {chart_index} de {sheet_name}: {ex}", exc_info=True)
                     continue
 
+
     def _insert_chart_at_location(self, word_doc, chart_obj, search_text, target_occurrence, chart_index, sheet_name):
+        
         found_count = 0
+        word_app = word_doc.Application
 
         try:
             paragraphs = word_doc.Paragraphs
@@ -148,173 +171,186 @@ class CopyGraphics:
                         try:
                             logger.info(f"Insertando gráfica en ocurrencia {target_occurrence}")
 
-                            # Copiar el gráfico
                             chart_obj.Copy()
-                            time.sleep(0.5)
+                            
+                            pythoncom.PumpWaitingMessages()
+                            time.sleep(0.3)
 
-                            # Obtener el rango del párrafo
                             para_range = para.Range
-
-                            # Posicionar después del párrafo
-                            para_range.Collapse(0)  # 0 = wdCollapseStart
+                            para_range.Collapse(0)
                             para_range.InsertParagraphAfter()
-                            para_range.Move(1, 1)  # 1 = wdParagraph
-                            para_range.Select()
+                            para_range.Move(1, 1)
+                            
+                            insertion_range = para_range.Duplicate
+                            insertion_range.Select()
 
-                            # Pegar como objeto de Excel (editable)
-                            word_doc.Application.Selection.PasteSpecial(
+                            word_app.Selection.PasteSpecial(
                                 Link=False,
-                                DataType=10,  # wdPasteChart
-                                Placement=0,  # wdInLine
+                                DataType=10,
+                                Placement=0,
                                 DisplayAsIcon=False
                             )
 
-                            time.sleep(0.5)
+                            pythoncom.PumpWaitingMessages()
+                            time.sleep(0.3)
 
-                            # Ajustar tamaño y centrar
-                            if word_doc.Application.Selection.InlineShapes.Count > 0:
-                                shape = word_doc.Application.Selection.InlineShapes(1)
+                            if word_app.Selection.InlineShapes.Count > 0:
+                                shape = word_app.Selection.InlineShapes(1)
                                 shape.Width = 425.2
                                 shape.Height = 283.5
                                 shape.Range.ParagraphFormat.Alignment = 1
 
-                            logger.info(f"✓ Grafica {chart_index} de {sheet_name} pegada exitosamente")
+                            word_app.Selection.MoveDown(1, 1)
+                            
+                            self._clear_clipboard()
+
+                            logger.info(f"Grafica {chart_index} de {sheet_name} pegada exitosamente")
                             return True
 
                         except Exception as paste_error:
                             logger.error(f"Error pegando grafica {chart_index}: {paste_error}", exc_info=True)
+                            self._clear_clipboard()
                             return False
 
-        except Exception as ex:
-            logger.error(f"Error buscando ubicación: {ex}", exc_info=True)
-            return False
-
-            logger.warning(f"✗ No se encontró '{search_text}' (ocurrencia {target_occurrence}) en el documento")
+            logger.warning(f"No se encontró '{search_text}' (ocurrencia {target_occurrence}) en el documento")
             return False
 
         except Exception as ex:
             logger.error(f"Error buscando ubicación: {ex}", exc_info=True)
             return False
 
-            logger.warning(f"No se encontró '{search_Text}' (ocurrencia {target_occurrence})")
-            return False
+
+    def _clear_clipboard(self):
+        
+        try:
+            import win32clipboard
+            
+            win32clipboard.OpenClipboard()
+            win32clipboard.EmptyClipboard()
+            win32clipboard.CloseClipboard()
+            
+        except Exception as e:
+            logger.warning(f"No se pudo limpiar el portapapeles: {e}")
+
 
     def _get_graphic_mappings(self):
-
+        
         return {
             "IN SITU": {
                 2: {
-                    "Text": "Gráfica 2. Comportamiento del Caudal en el Afluente y el Efluente",
+                    "text": "Gráfica 2. Comportamiento del Caudal en el Afluente y el Efluente",
                     "occurrence": 2
                 },
                 1: {
-                    "Text": "Gráfica 4. Comportamiento del pH en el Afluente y Efluente",
+                    "text": "Gráfica 4. Comportamiento del pH en el Afluente y Efluente",
                     "occurrence": 2
                 }
             },
             "GRÁFICAS": {
                 5: {
-                    "Text": "Gráfica 3. Comportamiento del Caudal",
+                    "text": "Gráfica 3. Comportamiento del Caudal",
                     "occurrence": 2
                 },
                 4: {
-                    "Text": "Gráfica 5. Comportamiento del pH",
+                    "text": "Gráfica 5. Comportamiento del pH",
                     "occurrence": 2
                 },
                 6: {
-                    "Text": "Gráfica 6. Comportamiento de los Sólidos Sedimentables",
+                    "text": "Gráfica 6. Comportamiento de los Sólidos Sedimentables",
                     "occurrence": 2
                 },
                 3: {
-                    "Text": "Gráfica 7. Comportamiento de la Acidez y la Alcalinidad Total",
+                    "text": "Gráfica 7. Comportamiento de la Acidez y la Alcalinidad Total",
                     "occurrence": 2
                 },
                 7: {
-                    "Text": "Gráfica 8. Comportamiento del Cianuro Total",
+                    "text": "Gráfica 8. Comportamiento del Cianuro Total",
                     "occurrence": 2
                 },
                 8: {
-                    "Text": "Gráfica 9. Comportamiento de los Cloruros",
+                    "text": "Gráfica 9. Comportamiento de los Cloruros",
                     "occurrence": 2
                 },
                 9: {
-                    "Text": "Gráfica 10. Comportamiento de los Sulfatos",
+                    "text": "Gráfica 10. Comportamiento de los Sulfatos",
                     "occurrence": 2
                 },
                 10: {
-                    "Text": "Gráfica 11. Comportamiento de la DBO5 y DQO",
+                    "text": "Gráfica 11. Comportamiento de la DBO5 y DQO",
                     "occurrence": 2
                 },
                 27: {
-                    "Text": "Gráfica 12. Comportamiento de la Dureza Cálcica y Dureza Total",
+                    "text": "Gráfica 12. Comportamiento de la Dureza Cálcica y Dureza Total",
                     "occurrence": 2
                 },
                 11: {
-                    "Text": "Gráfica 13. Comportamiento de los Fenoles",
+                    "text": "Gráfica 13. Comportamiento de los Fenoles",
                     "occurrence": 2
                 },
                 12: {
-                    "Text": "Gráfica 14. Comportamiento de los Sulfuros",
+                    "text": "Gráfica 14. Comportamiento de los Sulfuros",
                     "occurrence": 2
                 },
                 13: {
-                    "Text": "Gráfica 15. Comportamiento de las Grasas y Aceites e Hidrocarburos",
+                    "text": "Gráfica 15. Comportamiento de las Grasas y Aceites e Hidrocarburos",
                     "occurrence": 2
                 },
                 17: {
-                    "Text": "Gráfica 16. Comportamiento del Arsénico Total",
+                    "text": "Gráfica 16. Comportamiento del Arsénico Total",
                     "occurrence": 2
                 },
                 22: {
-                    "Text": "Gráfica 17. Comportamiento del Cadmio Total",
+                    "text": "Gráfica 17. Comportamiento del Cadmio Total",
                     "occurrence": 2
                 },
                 24: {
-                    "Text": "Gráfica 18. Comportamiento del Mercurio total.",
+                    "text": "Gráfica 18. Comportamiento del Mercurio total.",
                     "occurrence": 2
                 },
                 16: {
-                    "Text": "Gráfica 19. Comportamiento del Níquel Total.",
+                    "text": "Gráfica 19. Comportamiento del Níquel Total.",
                     "occurrence": 2
                 },
                 25: {
-                    "Text": "Gráfica 20. Comportamiento del Plomo Total.",
+                    "text": "Gráfica 20. Comportamiento del Plomo Total.",
                     "occurrence": 2
                 },
                 18: {
-                    "Text": "Gráfica 21. Comportamiento del Selenio Total.",
+                    "text": "Gráfica 21. Comportamiento del Selenio Total.",
                     "occurrence": 2
                 },
                 23: {
-                    "Text": "Gráfica 22. Comportamiento del Vanadio Total.",
+                    "text": "Gráfica 22. Comportamiento del Vanadio Total.",
                     "occurrence": 2
                 },
                 26: {
-                    "Text": "Gráfica 23. Comportamiento del Zinc Total.",
+                    "text": "Gráfica 23. Comportamiento del Zinc Total.",
                     "occurrence": 2
                 },
                 19: {
-                    "Text": "Gráfica 24. Comportamiento del Cobre Total.",
+                    "text": "Gráfica 24. Comportamiento del Cobre Total.",
                     "occurrence": 2
                 },
                 21: {
-                    "Text": "Gráfica 25. Comportamiento del Cromo Total",
+                    "text": "Gráfica 25. Comportamiento del Cromo Total",
                     "occurrence": 2
                 },
                 20: {
-                    "Text": "Gráfica 26. Comportamiento del Hierro Total.",
+                    "text": "Gráfica 26. Comportamiento del Hierro Total.",
                     "occurrence": 2
                 },
                 14: {
-                    "Text": "Gráfica 27. Comportamiento del Nitrógeno Total",
+                    "text": "Gráfica 27. Comportamiento del Nitrógeno Total",
                     "occurrence": 2
                 },
                 15: {
-                    "Text": "Gráfica 28. Comportamiento de los Sólidos Suspendidos Totales",
+                    "text": "Gráfica 28. Comportamiento de los Sólidos Suspendidos Totales",
                     "occurrence": 2
                 }
             }
         }
 
+
     def paste_graphics(self):
+        
         pass
